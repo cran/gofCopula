@@ -1,0 +1,24 @@
+## regular functions:
+
+export("gofPIOSRn", "gofPIOSTn", "gofKernel", "gofRosenblattSnB", 
+"gofRosenblattSnC", "gofADChisq", "gofADGamma", 
+"gofSn", "gofKendallCvM", "gofKendallKS",
+"gofWhite", "gofRn", "gofHybrid", "gofWhich", "gofWhichCopula", "gof",
+"gofCheckTime", "gofco"
+)
+
+exportClass("gofCOP")
+exportClass("goftime")
+
+S3method(print, gofCOP)
+S3method(print, goftime)
+
+
+# imports:
+
+import("copula")
+importFrom("VineCopula", BiCopGofTest)
+importFrom("SparseGrid", createIntegrationGrid)
+importFrom("numDeriv", grad)
+importFrom("methods", is)
+importFrom("stats", constrOptim, cor, cov, ecdf, lm, optimise, qnorm, qt)
