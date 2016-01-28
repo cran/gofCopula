@@ -54,7 +54,7 @@ The test statistic is then given by
 
 The approximate p-value is computed by the formula, see \pkg{copula},
 
-\deqn{(0.5 + \sum_{b=1}^M 1_{\{T_b \leq T\}} / (M+1),}{(0.5 + sum(T[b] >= T, b=1, .., M)) / (M+1),}
+\deqn{(0.5 + \sum_{b=1}^M \mathbf{I}(T_b \geq T) / (M+1),}{(0.5 + sum(T[b] >= T, b=1, .., M)) / (M+1),}
 
 where \eqn{T} and \eqn{T_b}{T[b]} denote the test statistic and the bootstrapped test statistc, respectively. This ensures that the approximate p-value is a number strictly between 0 and 1, which is sometimes necessary for further treatments. See Pesarin (2001) for more details.
 }

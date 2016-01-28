@@ -27,9 +27,12 @@
     gofTstat(u, method = method, copula = C.th.n)
   else gofTstat(u, method = method)
   T0 <- vapply(1:N, function(k) {
-    Uhat <- pobs(rCopula(n, C.th.n))
-    C.th.n. <- fitCopula(copula, Uhat, method = estim.method, 
-                         estimate.variance = FALSE, ...)@copula
+    repeat {
+      Uhat <- rCopula(n, C.th.n)
+      C.th.n. <- try(fitCopula(copula, Uhat, method = estim.method, 
+                           estimate.variance = FALSE, ...)@copula, silent = T)
+      if (class(C.th.n.) != "try-error"){break}
+    }
     u. = Uhat
     T0. <- if (method == "Sn") 
       gofTstat(u., method = method, copula = C.th.n.)

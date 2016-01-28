@@ -1,5 +1,5 @@
 0864fb80cba16059c85be84458fb44be *ChangeLog
-a55efaf15e8911b4f1259274ed64acdc *DESCRIPTION
+67db4e24df52274ad911978ffb57a03a *DESCRIPTION
 a4c71c70b33b3e7cee699425c34af32d *NAMESPACE
 a76429b8405ec11b686d20a0c2212d79 *R/class_gofCOP.R
 a616784150911fac4e4a1ef68d95a8a5 *R/estimate_margins.R
@@ -8,7 +8,7 @@ e1ad83714232ec800b12c8d8811a794e *R/functions2d.R
 905982e47a3d7f8f8bc1802020fdb99f *R/goftime.R
 7cb893f8388f0497840ede530a5ceaa3 *R/tests.R
 08459f07472a562d478a3004ccdc9b88 *R/tests_CheckTime.R
-22861b53a20aac0b0376e5063908cdb8 *R/tests_copula_helper.R
+da430f9061b4960e619cc7d13bc7c1ab *R/tests_copula_helper.R
 fe21f2bd4b45755440ca9b58b7743cc0 *R/tests_copula_new.R
 11a6aa8c8b8759c87ef0c97f58d64c0f *R/tests_gof.R
 c68a7ebef33cd7d3ddff98f3dfedb76f *R/tests_gofco.R
@@ -24,12 +24,12 @@ ad457419a3865b823cfdf58a2f76ba43 *man/tests11.Rd
 84cd1e3f71276c8c5f794bf645967e9e *man/tests12.Rd
 a40016c2beb8664bf90dcb55d7b58616 *man/tests2.Rd
 8ec40d77962656f92654b3d8ca2bf129 *man/tests_CheckTime.Rd
-37e3c08f0dac1e7e68b2408c668d6d1a *man/tests_copula1.Rd
-28b585609278c41a4566a4d0ca14093c *man/tests_copula2.Rd
-ecfac6454b9730fdf70c0effe7c59575 *man/tests_copula3.Rd
-62ae6d58753e329b9b5ec1690b52db42 *man/tests_copula4.Rd
-95f1dee50f5522cb9787307696c001f4 *man/tests_copula6.Rd
-e6050892dc3b24656b8dff15fa6df85d *man/tests_copula7.Rd
+77e525a4fee7f172690eb9ff803d41ca *man/tests_copula1.Rd
+2140e27afe91f2de25d5de375ad342e9 *man/tests_copula2.Rd
+980365d1232329c5034303f1ab65b5d2 *man/tests_copula3.Rd
+0614645c1791e43d4dd182a1466609b5 *man/tests_copula4.Rd
+c0d776b71a0cfd6a63caf3a93debdaa0 *man/tests_copula6.Rd
+aa5fbafbb4d4cda3259e326c24d9f68b *man/tests_copula7.Rd
 f6419b0d6fbfc4fe091ad6cfdf283432 *man/tests_gof.Rd
 2042ed5d73327c6e5f6ef9c5cf5411bf *man/tests_vine11.Rd
 598ff95a02e2329855cdefe67e84cd91 *man/tests_vine12.Rd
