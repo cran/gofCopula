@@ -4,15 +4,15 @@
 \title{2 dimensional gof tests based on White's information matrix equality.
 }
 \description{
-\code{\link{gofWhite}} is a wrapper for the function \code{BiCopGofTest} from the package \pkg{VineCopula} which extends its functionality. The margins can be estimated by a bunch of distributions and the time which is necessary for the estimation can be given. It tests a given 2 dimensional dataset for a copula  with the gof test based on White's information matrix equality. The possible copulae are "gaussian", "t", "gumbel", "clayton" and "frank". See for reference Schepsmeier et al. (2015). The parameter estimation is performed with pseudo maximum likelihood method.
+\code{\link{gofWhite}} tests a given 2 dimensional dataset for a copula  with the gof test based on White's information matrix equality. The possible copulae are "normal", "t", "gumbel", "clayton" and "frank". See for reference Schepsmeier et al. (2015). The parameter estimation is performed with pseudo maximum likelihood method. In case the estimation fails, inversion of Kendall's tau is used. The margins can be estimated by a bunch of distributions and the time which is necessary for the estimation can be given. The approximate p-values are computed with a parametric bootstrap, which computation can be accelerated by enabling in-build parallel computation. The computation of the test statistic and p-values is performed by corresponding functions from the \code{\link{VineCopula}} package.
 }
 \usage{
-gofWhite(copula, x, M = 1000, param = 0, param.est = T, df = 0, df.est = T, 
-          margins = "ranks", execute.times.comp = T)
+gofWhite(copula, x, M = 1000, param = 0.5, param.est = T, df = 4, df.est = T, 
+          margins = "ranks", execute.times.comp = T, processes = 1)
 }
 \arguments{
 \item{copula}{
-The copula to test for. Possible are the copulae \code{"gaussian"}, \code{"t"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}.
+The copula to test for. Possible are the copulae \code{"normal"}, \code{"t"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}.
 }
   \item{x}{
 A 2 dimensional matrix containing the residuals of the data.
@@ -38,6 +38,8 @@ Specifies which estimation method shall be used in case that the input data are 
 \item{execute.times.comp}{
 Logical. Defines if the time which the estimation most likely takes shall be computed. It'll be just given if \code{M} is at least 100.
 }
+\item{processes}{
+The number of parallel processes which are performed to speed up the bootstrapping. Shouldn't be higher than the number of logical processors. Please see the details.}
 }
 \details{
 The details are obtained from Schepsmeier et al. (2015) who states that this test uses the information matrix equality of White (1982). Under correct model specification is the Fisher Information equivalently calculated as minus the expected Hessian matrix or as the expected outer product of the score function. The null hypothesis is 
@@ -59,6 +61,7 @@ where \eqn{l(\theta_n)}{l(theta_n)} represents the log likelihood function and \
 The test statistic will be rejected if
 \deqn{T > (1 - \alpha) (\chi^2_{p(p+1)/2})^{-1}.}{T > (1 - alpha) (chi^2_(p(p+1)/2))^(-1).}
 
+For small values of \code{M}, initializing the parallization via \code{processes} does not make sense. The registration of the parallel processes increases the computation time. Please consider to enable parallelization just for high values of \code{M}.
 }
 \value{
 A object of the \code{class} gofCOP with the components
@@ -66,11 +69,15 @@ A object of the \code{class} gofCOP with the components
 \item{erg.tests}{a matrix with the p-value and test statistic of test}
 }
 \references{
-Ulf Schepsmeier, Jakob Stoeber, Eike Christian Brechmann, Benedikt Graeler (2015). VineCopula: Statistical Inference of Vine Copulas. \emph{R package version 1.4.}. \url{https://cran.r-project.org/package=VineCopula}
+Ulf Schepsmeier, Jakob Stoeber, Eike Christian Brechmann, Benedikt Graeler (2015). VineCopula: Statistical Inference of Vine Copulas. \emph{R package version 1.4.}. \url{https://cran.r-project.org/package=VineCopula} \cr \cr
+Schepsmeier, U. and J. Stoeber (2014). Derivatives and Fisher information of bivariate copulas. \emph{Statistical Papers, 55(2), 525-542.} \url{http://link.springer.com/article/10.1007/s00362-013-0498-x} \cr \cr
+Stoeber, J. and U. Schepsmeier (2013). Estimating standard errors in regular vine copula models \emph{Computational Statistics, 28 (6), 2679-2707} \cr \cr
+Schepsmeier, U. (2015). Efficient information based goodness-of-fit tests for vine copula models with fixed margins. \emph{Journal of Multivariate Analysis 138, 34-52.}
+Schepsmeier, U. (2014). A goodness-of-fit test for regular vine copula models.
 }
 \examples{
-data = cbind(rnorm(100), rnorm(100))
+data(IndexReturns)
 
-gofWhite("gaussian", data)
+gofWhite("normal", IndexReturns[c(1:100),c(1:2)], M = 10)
 }
 

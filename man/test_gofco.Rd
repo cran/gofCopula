@@ -8,8 +8,9 @@
 }
 \usage{
 gofco(copulaobject, x, testset = c("gofPIOSRn", "gofKernel"), margins = "ranks", 
-      M = 1000, execute.times.comp = T, m = 1, MJ = 100, delta.J = 0.5, 
-      nodes.Integration = 12, m_b = 0.5, zeta.m = 0, b_Rn = 0.05)
+      dispstr = "ex", M = 1000, execute.times.comp = T, m = 1, MJ = 100, 
+      delta.J = 0.5, nodes.Integration = 12, m_b = 0.5, zeta.m = 0, b_Rn = 0.05, 
+      processes = 1)
 }
 \arguments{
 \item{copulaobject}{
@@ -19,10 +20,13 @@ An object with the copula class from the copula package.
 A matrix containing the residuals of the data. Take into account that the dimension of the matrix must fit the required dimensions from the single tests.
 }
   \item{testset}{
-The tests to be used. Possible are \code{"gofPIOSRn"}, \code{"gofPIOSTn"}, \code{"gofKernel"}, \code{"gofRosenblattSnB"}, \code{"gofRosenblattSnC"}, \code{"gofADChisq"}, \code{"gofADGamma"}, \code{"gofSn"}, \code{"gofKendallCvM"}, \code{"gofKendallKS"}, \code{"gofWhite"}, \code{"gofRn"}.
+The tests to be used. Possible are \code{"gofPIOSRn"}, \code{"gofPIOSTn"}, \code{"gofKernel"}, \code{"gofRosenblattSnB"}, \code{"gofRosenblattSnC"}, \code{"gofRosenblattChisq"}, \code{"gofRosenblattGamma"}, \code{"gofSn"}, \code{"gofKendallCvM"}, \code{"gofKendallKS"}, \code{"gofWhite"}, \code{"gofRn"}.
 }
 \item{margins}{
 Specifies which estimation method shall be used in case that the input data are not in the range [0,1]. The default is \code{"ranks"}, which is the standard approach to convert data in such a case. Alternatively can the following distributions be specified: \code{"beta"}, \code{"cauchy"}, Chi-squared (\code{"chisq"}), \code{"f"}, \code{"gamma"}, Log normal (\code{"lnorm"}), Normal (\code{"norm"}), \code{"t"}, \code{"weibull"}, Exponential (\code{"exp"}).
+}
+\item{dispstr}{
+A character string specifying the type of the symmetric positive definite matrix characterizing the elliptical copula. Implemented structures are "ex" for exchangeable, "ar1" for AR(1), "toep" for Toeplitz, and "un" for unstructured, see package \code{copula}.
 }
 \item{M}{
 Number of bootstrapping samples in the single tests.
@@ -51,6 +55,8 @@ The adjustment parameter. Only necessary if the test \code{gofRn} is part of \co
 \item{b_Rn}{
 The bandwidth for the estimation of the first-order partial derivatives based on the empirical copula. Only necessary if the test \code{gofRn} is part of \code{testset}.
 }
+\item{processes}{
+The number of parallel processes which are performed to speed up the bootstrapping. Shouldn't be higher than the number of logical processors.}
 }
 \details{
 The function reads out the arguments in the copula class object. If the dependence parameter is not specified in the object, it is estimated. In case that the object describes a "t"-copula, then the same holds for the degrees of freedom. The dimension is not extracted from the object. It is obtained from the inserted dataset.
@@ -66,8 +72,8 @@ A object of the \code{class} gofCOP with the components
 Yan, Jun. Enjoy the joy of copulas: with a package copula. Journal of Statistical Software 21.4 (2007): 1-21.
 }
 \examples{
-data = cbind(rnorm(100), rnorm(100))
+data(IndexReturns)
 copObject = normalCopula()
 
-gofco(copObject, x = data, testset = c("gofPIOSRn", "gofKernel"), M = 20)
+gofco(copObject, x = IndexReturns[c(1:100),c(1:2)], testset = c("gofPIOSRn", "gofKernel"), M = 20)
 }

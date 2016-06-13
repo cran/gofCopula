@@ -1,10 +1,10 @@
 ## regular functions:
 
 export("gofPIOSRn", "gofPIOSTn", "gofKernel", "gofRosenblattSnB", 
-"gofRosenblattSnC", "gofADChisq", "gofADGamma", 
+"gofRosenblattSnC", "gofRosenblattChisq", "gofRosenblattGamma", 
 "gofSn", "gofKendallCvM", "gofKendallKS",
 "gofWhite", "gofRn", "gofHybrid", "gofWhich", "gofWhichCopula", "gof",
-"gofCheckTime", "gofco"
+"gofCheckTime", "gofco", "gofADGamma", "gofADChisq"
 )
 
 exportClass("gofCOP")
@@ -13,12 +13,16 @@ exportClass("goftime")
 S3method(print, gofCOP)
 S3method(print, goftime)
 
-
 # imports:
 
 import("copula")
-importFrom("VineCopula", BiCopGofTest)
+import("parallel")
+import("foreach")
+import("doParallel")
+importFrom("VineCopula", BiCopGofTest, BiCopDeriv, BiCopDeriv2, BiCopPDF)
 importFrom("SparseGrid", createIntegrationGrid)
 importFrom("numDeriv", grad)
 importFrom("methods", is)
-importFrom("stats", constrOptim, cor, cov, ecdf, lm, optimise, qnorm, qt)
+importFrom("MASS", ginv)
+importFrom("stats", constrOptim, cor, cov, ecdf, lm, optimise, qnorm, qt, pchisq)
+importFrom("utils", tail)

@@ -1,21 +1,22 @@
 \name{gofPIOSRn}
 \alias{gofPIOSRn}
 
-\title{2 dimensional gof test based on the in-and-out-of-sample approach
+\title{2 and 3 dimensional gof test based on the in-and-out-of-sample approach
 }
 \description{
-\code{gofPIOSRn} tests a 2 dimensional dataset with the approximate PIOS test for a copula. The possible copulae are "gaussian", "t", "gumbel", "clayton" and "frank". The parameter estimation is performed with pseudo maximum likelihood method. In case the estimation fails, inversion of Kendall's tau is used.
+\code{gofPIOSRn} tests a 2 or 3 dimensional dataset with the approximate PIOS test for a copula. The possible copulae are "normal", "t", "gumbel", "clayton" and "frank". The parameter estimation is performed with pseudo maximum likelihood method. In case the estimation fails, inversion of Kendall's tau is used. The approximate p-values are computed with a semiparametric bootstrap, which computation can be accelerated by enabling in-build parallel computation.
 }
 \usage{
 gofPIOSRn(copula, x, M = 1000, param = 0.5, param.est = T, df = 4, df.est = T, 
-          margins = "ranks", execute.times.comp = T)
+          margins = "ranks", dispstr = "ex",execute.times.comp = T, 
+          processes = 1)
 }
 \arguments{
 \item{copula}{
-The copula to test for. Possible are the copulae \code{"gaussian"}, \code{"t"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}.
+The copula to test for. Possible are the copulae \code{"normal"}, \code{"t"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}.
 }
  \item{x}{
-A 2 dimensional matrix containing the residuals of the data.
+A 2 or 3 dimensional matrix containing the residuals of the data.
 }
   \item{M}{
 Number of bootstrapping loops.
@@ -35,32 +36,38 @@ Indicates if \code{df} shall be estimated. Has to be either \code{FALSE} or \cod
 \item{margins}{
 Specifies which estimation method shall be used in case that the input data are not in the range [0,1]. The default is \code{"ranks"}, which is the standard approach to convert data in such a case. Alternatively can the following distributions be specified: \code{"beta"}, \code{"cauchy"}, Chi-squared (\code{"chisq"}), \code{"f"}, \code{"gamma"}, Log normal (\code{"lnorm"}), Normal (\code{"norm"}), \code{"t"}, \code{"weibull"}, Exponential (\code{"exp"}).
 }
+\item{dispstr}{
+A character string specifying the type of the symmetric positive definite matrix characterizing the elliptical copula. Implemented structures are "ex" for exchangeable and "un" for unstructured, see package \code{copula}.
+}
 \item{execute.times.comp}{
 Logical. Defines if the time which the estimation most likely takes shall be computed. It'll be just given if \code{M} is at least 100.
 }
+\item{processes}{
+The number of parallel processes which are performed to speed up the bootstrapping. Shouldn't be higher than the number of logical processors. Please see the details.}
 }
 \details{
 The "Rn" test is introduced in Zhang et al. (2015). It is a information ratio statistic which is approximately equivalent to the "Tn" test, which is the PIOS test. Both test the \eqn{H_0}{H0} hypothesis
 \deqn{H_0 : C_0 \in \mathcal{C}.}{H0 : C0 in Ccal.}
 "Rn" is introduced because the "Tn" test has to estimate \eqn{n/m} parameters which can be computationally demanding. The test statistic of the "Tn" test is defined as
-\deqn{T = \sum_{b=1}^B \sum_{i=1}^m [l\{U_i^b;\theta_n \} - l\{U_i^b;\theta_n^{-b} \}]}{T = sum(sum(l(U_i^b;theta_n ) - l(U_i^b;theta_n^(-b) ), i=1, ...,m ), b=1, ...,B)}
+\deqn{T = \sum_{b=1}^M \sum_{k=1}^m [l\{U_k^b;\theta_n \} - l\{U_k^b;\theta_n^{-b} \}]}{T = sum(sum(l(U_k^b;theta_n ) - l(U_k^b;theta_n^(-b) ), k=1, ...,m ), b=1, ...,M)}
 
-with the pseudo observations \eqn{U_{ij}}{U[ij]} for \eqn{i = 1, \dots,n}{i = 1, ...,n}; \eqn{j = 1, \dots,d}{j = 1, ...,d} and
+with \eqn{l} the log likelihood function, the pseudo observations \eqn{U_{ij}}{U[ij]} for \eqn{i = 1, \dots,n}{i = 1, ...,n}; \eqn{j = 1, \dots,d}{j = 1, ...,d} and
 \deqn{\theta_n = \arg \min_{\theta} \sum_{i=1}^n l(U_i; \theta)}{theta_n = arg max_theta sum(l(U_i; theta), i=1, ..., n)}
 and
-\deqn{\theta_n^{-b} = \arg \min_{\theta} \sum_{b^{'} \neq b}^B \sum_{i=1}^m l(U_i^{b^{'}}; \theta), b=1, \dots, B.}{theta_n^(-b) = arg max_theta sum(sum(l(U_i^(b^'); theta), i=1, ..., m), b^'=1, ..., B, b^' != b), b = 1, ..., B.}
+\deqn{\theta_n^{-b} = \arg \min_{\theta} \sum_{b^{'} \neq b}^M \sum_{k=1}^m l(U_k^{b^{'}}; \theta), b=1, \dots, M.}{theta_n^(-b) = arg max_theta sum(sum(l(U_k^(b^'); theta), k=1, ..., m), b^'=1, ..., M, b^' != b), b = 1, ..., M.}
 
 By defining two information matrices
 \deqn{S(\theta) = - E_0 [\frac{\partial^2}{\partial \theta \partial \theta^{\top}}l \{U_1; \theta \} ],}{S(theta) = E0 [d^2/d theta d theta^T l(U_1; theta)],}
 \deqn{V(\theta) = - E_0 [\frac{\partial}{\partial \theta} l \{U_1; \theta \} l^{\top} \{U_1; \theta \} ]}{V(theta) = E0 [d/d theta l(U_1; theta) d/d theta l^T(U_1; theta)]}
 where \eqn{S(\cdot)}{S(.)} represents the negative sensitivity matrix, \eqn{V(\cdot)}{V(.)} the variability matrix and \eqn{E_0}{E0} is the expectation under the true copula \eqn{C_0}{C0}. Under suitable regularity conditions, given in Zhang et al. (2015), holds then in probability, that
-\deqn{T = tr\{S(\theta^{*})^{-1} - V(\theta^{*} \}}{T = tr{S(theta^*)^(-1) - V(theta^*)}}
+\deqn{T = tr\{S(\theta^{*})^{-1} - V(\theta^{*}) \}}{T = tr{S(theta^*)^(-1) - V(theta^*)}}
 as \eqn{n \rightarrow \infty.}{n -> infinity.}
 
 The approximate p-value is computed by the formula
-\deqn{p = \frac{1}{B} \sum_{b = 1}^B \mathbf{I}(|T_b| \geq T).}{p = 1/B sum(I(T[b] >= T, b= 1, ..., B)).}
+\deqn{\sum_{b=1}^M \mathbf{I}(|T_b| \geq |T|) / M,}{sum(|T[b]| >= |T|, b=1, .., M) / M,}
 For more details, see Zhang et al. (2015). The applied estimation method is the two-step pseudo maximum likelihood approach, see Genest and Rivest (1995).
 
+For small values of \code{M}, initializing the parallization via \code{processes} does not make sense. The registration of the parallel processes increases the computation time. Please consider to enable parallelization just for high values of \code{M}.
 }
 \value{
 A object of the \code{class} gofCOP with the components
@@ -74,7 +81,7 @@ Genest, C., K. G. and Rivest, L.-P. (1995). A semiparametric estimation procedur
 parameters in multivariate families of distributions. \emph{Biometrika, 82:534-552}
 }
 \examples{
-data = cbind(rnorm(100), rnorm(100))
+data(IndexReturns)
 
-gofPIOSRn("gaussian", data, M = 20)
+gofPIOSRn("normal", IndexReturns[c(1:100),c(1:2)], M = 20)
 }

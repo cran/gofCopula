@@ -1,9 +1,11 @@
-gofKendallKS = function(copula, x, param = 0, param.est = T, margins = "ranks", M = 100, execute.times.comp = T){
+gofKendallKS = function(copula, x, param = 0.5, param.est = T, df = 4, df.est = T, margins = "ranks", dispstr = "ex", M = 100, execute.times.comp = T, processes = 1){
   if (is.matrix(x) == F){stop("x must be a matrix")}
-  if (dim(x)[2] != 2){stop("x must be of dimension 2")}
-  
+  dims = dim(x)[2]
+  if (is.element(copula, c("normal", "gaussian", "t", "clayton", "frank", "gumbel")) == F){stop("This copula is not implemented for gofKendallKS.")}
+  if (!is.element(dispstr, c("ex", "un"))) {stop("dispstr has to be either 'ex' or 'un'. See documentation for more information.")}  
+
   if (execute.times.comp == T & M >= 100){
-    times.comp = gofCheckTime(copula = copula, x=x, test = "gofKendallKS", M = M, print.res = F)
+    times.comp = gofCheckTime(copula = copula, x=x, test = "gofKendallKS", dispstr = dispstr, M = M, print.res = F, processes = processes)
     print(.get.time(times.comp))
   }
   if (any(x > 1) || any(x < 0)){
@@ -13,48 +15,96 @@ gofKendallKS = function(copula, x, param = 0, param.est = T, margins = "ranks", 
       warning(paste("The observations aren't in [0,1]. The margins will be estimated by the ", margins, " distribution.", sep = ""))
     }
     
-    x = .margins(x, margins)
+    res.margins = .margins(x, margins)
+    param.margins = list()
+    if (margins == "ranks"){
+      for (i in 1:dim(x)[2]) {x[,i] = res.margins[[i]][[1]]}
+    } else {
+      for (i in 1:length(res.margins)) {param.margins[[i]] = res.margins[[i]][[1]]}
+      for (i in 1:dim(x)[2]) {x[,i] = res.margins[[i]][[2]]}
+    }
   }
-  if (param.est == T){param = 0}
   
-  if (copula == "independence"){fam = 0}
-  else if (copula == "gaussian"){fam = 1}
-  # else if (copula == "t"){fam = 2}
-  else if (copula == "clayton"){fam = 3}
-  else if (copula == "gumbel"){fam = 4}
-  else if (copula == "frank"){fam = 5}
-#   else if (copula == "joe"){fam = 6}
-#   else if (copula == "bb1"){fam = 7}
-#   else if (copula == "bb6"){fam = 8}
-#   else if (copula == "bb7"){fam = 9}
-#   else if (copula == "bb8"){fam = 10}
-#   else if (copula == "survival clayton"){fam =13}
-#   else if (copula == "survival gumbel"){fam =14}
-#   else if (copula == "survival joe"){fam =16}
-#   else if (copula == "survival bb1"){fam =17}
-#   else if (copula == "survival bb6"){fam =18}
-#   else if (copula == "survival bb7"){fam =19}
-#   else if (copula == "survival bb8"){fam =20}
-#   else if (copula == "90 clayton"){fam =23}
-#   else if (copula == "90 gumbel"){fam =24}
-#   else if (copula == "90 joe"){fam =26}
-#   else if (copula == "90 bb1"){fam =27}
-#   else if (copula == "90 bb6"){fam =28}
-#   else if (copula == "90 bb7"){fam =29}
-#   else if (copula == "90 bb8"){fam =30}
-#   else if (copula == "270 clayton"){fam =33}
-#   else if (copula == "270 gumbel"){fam =34}
-#   else if (copula == "270 joe"){fam =36}
-#   else if (copula == "270 bb1"){fam =37}
-#   else if (copula == "270 bb6"){fam =38}
-#   else if (copula == "270 bb7"){fam =39}
-#   else if (copula == "270 bb8"){fam =40}
-  else if (copula == "t"){stop("t-copula is not implemented for the GoF test based on Kendall's process")}
-  else {stop("This copula is not implemented for gofKendallKS.")}
-  res = BiCopGofTest(u1 = x[,1], u2 = x[,2], family = fam, par = param, par2 = 0, method = "kendall", B = M)
+  if (copula == "gaussian"){ warning("Please note that the old (pre 0.1-3) term 'gaussian' was replaced with 'normal'."); copula = "normal"}
+  if (df.est == T){df.fixed = F} else if (df.est == F){df.fixed = T}
+  
+  #### test
+if ("normal" == copula || "t" == copula){
+  if (param.est == T){
+    param = try(fitCopula(ellipCopula(copula, dim = dim(x)[2], df = df, df.fixed = df.fixed, dispstr = dispstr), data = x, method = "mpl")@estimate, silent = T); estim.method = "mpl"
+    if (class(param) == "try-error"){warning("Pseudo Maximum Likelihood estimation of the parameter failed. The estimation was performed with inversion of Kendall's Tau."); param = fitCopula(ellipCopula(copula, dim = dim(x)[2], df = df, df.fixed = df.fixed, dispstr = dispstr), data = x, method = "itau")@estimate; estim.method = "itau"}
+  }
+  if (copula == "t" & df.fixed == F & param.est == T){
+    df = tail(param, n=1)
+    cop = ellipCopula(copula, param = param[-length(param)], dim = dim(x)[2], df = df, df.fixed = T, dispstr = dispstr); estim.method = "mpl"
+  } else {
+    cop = ellipCopula(copula, param = param, dim = dim(x)[2], df = df, df.fixed = T, dispstr = dispstr); estim.method = "mpl"
+  }
+} else if("clayton" == copula || "frank" == copula || "gumbel" == copula || 
+              "amh" == copula || "joe" == copula){
+    if (param.est == T){
+      param = try(fitCopula(archmCopula(copula, dim = dim(x)[2]), data = x, method = "mpl")@estimate, silent = T); estim.method = "mpl"
+      if (class(param) == "try-error"){warning("Pseudo Maximum Likelihood estimation of the parameter failed. The estimation was performed with inversion of Kendall's Tau."); param = fitCopula(archmCopula(copula, dim = dim(x)[2]), data = x, method = "itau")@estimate; estim.method = "itau"}
+    }
+    if (copula == "clayton" & dims > 2 & param < 0) {stop("The dependence parameter is negative for the dataset. For the clayton copula can this be only the case if the dimension is 2. Therefore is this not an appropriate copula for the dataset. Please consider to use another one.")}
+    if (copula == "frank" & dims > 2 & param < 0) {stop("The dependence parameter is negative for the dataset. For the frank copula can this be only the case if the dimension is 2. Therefore is this not an appropriate copula for the dataset. Please consider to use another one.")}
+    cop = archmCopula(copula, param = param, dim = dim(x)[2]); estim.method = "mpl"
+  }
+
+  n = dim(x)[1]
+  Cn = C.n(x,x)
+  Kn = C.n(as.matrix(Cn), as.matrix(Cn))
+  if (is.element(copula, c("clayton", "frank", "gumbel"))){
+    tcop1 = seq(0, n)/n
+    tcop2 = (seq(0, n) + 1)/n
+    Tn1 = abs((sapply(Kn, function(x,y) length(which(x <= y)), tcop1[-(n + 1)]) - apply(matrix(tcop1[-(n + 1)], nrow = n, ncol = dims),1,pCopula,cop)))
+    Tn2 = abs((sapply(Kn, function(x,y) length(which(x <= y)), tcop1[-(n + 1)]) - apply(matrix(tcop2[-(n + 1)], nrow = n, ncol = dims),1,pCopula,cop)))
+    TnK = sqrt(n) * max(Tn1, Tn2)
+  } else if (is.element(copula, c("normal", "t"))) {
+    Csample = rCopula(n*2, cop)
+    Csample.n = C.n(Csample,Csample)
+    Ksample = C.n(as.matrix(Csample.n), as.matrix(Csample.n))
+    TnK = sqrt(n) * mean(abs(Kn - Ksample))
+  }
+  
+  Tn = c()
+  if (processes > 1) {
+  cl = makeCluster(processes, type = "PSOCK")
+  clusterEvalQ(cl, library(copula))
+  clusterEvalQ(cl, library(foreach))
+  registerDoParallel(cl)
+  } else {registerDoSEQ()}
+  Tn = foreach(i=1:M) %dopar% {
+    repeat {
+      Csampleb = rCopula(n, cop)
+      copb <- try(fitCopula(cop, Csampleb, method = estim.method, 
+                           estimate.variance = FALSE)@copula, silent = T)
+      if (class(copb) != "try-error"){break}
+    }
+    Csample.nb = C.n(Csampleb,Csampleb)
+    Ksampleb = C.n(as.matrix(Csample.nb), as.matrix(Csample.nb))
+    
+    if (is.element(copula, c("clayton", "frank", "gumbel"))){
+      tcop1 = seq(0, n)/n
+      tcop2 = (seq(0, n) + 1)/n
+      Tn1 = abs((sapply(Ksampleb, function(x,y) length(which(x <= y)), tcop1[-(n + 1)]) - apply(matrix(tcop1[-(n + 1)], nrow = n, ncol = dims),1,pCopula,copb)))
+      Tn2 = abs((sapply(Ksampleb, function(x,y) length(which(x <= y)), tcop1[-(n + 1)]) - apply(matrix(tcop2[-(n + 1)], nrow = n, ncol = dims),1,pCopula,copb)))
+      sqrt(n) * max(Tn1, Tn2)
+    } else if (is.element(copula, c("normal", "t"))) {
+      Csample = rCopula(n*2, cop)
+      Csample.n = C.n(Csample,Csample)
+      Ksample = C.n(as.matrix(Csample.n), as.matrix(Csample.n))
+      sqrt(n) * mean(abs(Ksampleb - Ksample))
+    }
+  }
+  if (processes > 1) {
+  stopCluster(cl)
+  }
+  Tn = as.numeric(Tn)
+  pvalue = sum(abs(Tn) >= abs(TnK))/M
   
   structure(class = "gofCOP", 
             list(method = sprintf("Parametric bootstrap goodness-of-fit test (Kolmogorov-Smirnof) based on Kendall's process"), 
-                 erg.tests = matrix(c(res$p.value.KS, res$statistic.KS), ncol = 2, 
-                                    dimnames = list("KendallKS", c("p.value", "test statistic")))))
+                 erg.tests = matrix(c(pvalue, TnK, cop@parameters, if(class(try(cop@df, silent = TRUE)) == "try-error") {NULL} else {cop@df}), ncol = if(class(try(cop@df, silent = TRUE)) == "try-error") {2 + length(cop@parameters)} else {3 + length(cop@parameters)}, 
+                                    dimnames = list("KendallKS", if(class(try(cop@df, silent = TRUE)) == "try-error") {c("p.value", "test statistic", paste("rho.", 1:length(cop@parameters), sep=""))} else {c("p.value", "test statistic", paste("rho.", 1:length(cop@parameters), sep=""), "df")}))))
 }

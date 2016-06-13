@@ -9,6 +9,12 @@ print.gofCOP = function(x, ...){
     fp <- format.pval(x$p.value, digits = 2)
     out <- c(out, paste("p-value =", fp))
   }
+  if (!is.null(x$parameters)) {
+    out <- c(out, paste("rho.x =", x@parameters))
+  }
+  if (!is.null(x$parameters)) {
+    out <- c(out, paste("df =", x@df))
+  }
   cat(strwrap(paste(out, collapse = ", ")), sep = "\n")
   if (!is.null(x$erg.tests)) {
     cat("Tests results:")

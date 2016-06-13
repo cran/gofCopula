@@ -11,7 +11,7 @@ gofWhich(copula, d)
 }
 \arguments{
 \item{copula}{
-The copula to test for. Possible are the copulae \code{"gaussian"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}.
+The copula to test for. Possible are the copulae \code{"normal"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}.
 }
   \item{d}{
 The dimension to search for.
