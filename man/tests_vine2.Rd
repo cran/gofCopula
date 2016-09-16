@@ -12,7 +12,7 @@ gofWhite(copula, x, M = 1000, param = 0.5, param.est = T, df = 4, df.est = T,
 }
 \arguments{
 \item{copula}{
-The copula to test for. Possible are the copulae \code{"normal"}, \code{"t"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}.
+The copula to test for. Possible are the copulae \code{"normal"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}.
 }
   \item{x}{
 A 2 dimensional matrix containing the residuals of the data.

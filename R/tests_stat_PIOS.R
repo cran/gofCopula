@@ -14,8 +14,8 @@
            Rn.ac.f
          },
          tCopula = {
-           psn.sample = qt(x, df = copula@df)
-           Rn.t = -sum(apply(psn.sample, 1, FUN = .V.t, rho = copula@parameters, nu = copula@df)^2)/sum(apply(psn.sample, 1, FUN = .S.t, rho = copula@parameters, nu = copula@df)) - 1
+           psn.sample = qt(x, df = tail(copula@parameters, n = 1))
+           Rn.t = -sum(apply(psn.sample, 1, FUN = .V.t, rho = copula@parameters[-length(copula@parameters)], nu = tail(copula@parameters, n = 1))^2)/sum(apply(psn.sample, 1, FUN = .S.t, rho = copula@parameters[-length(copula@parameters)], nu = tail(copula@parameters, n = 1))) - 1
            Rn.t
          },
          normalCopula = {
@@ -63,7 +63,7 @@
   })
 }
 
-.Tn = function(x, copula, B, m, dims, param.est) {
+.Tn = function(x, copula, B, m, dims, param.est, estim.method) {
   switch(dims-1, {
   switch(class(copula),
          claytonCopula = {
@@ -71,7 +71,7 @@
            l.ac.c.b = 0
            if (param.est == T){
              for(b in 1:B){
-               l.ac.c.b = c(l.ac.c.b, .clay.12.density(fitCopula(claytonCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = "mpl")@estimate, x[((b-1)*m+1):(b*m),]))
+               l.ac.c.b = c(l.ac.c.b, .clay.12.density(fitCopula(claytonCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, x[((b-1)*m+1):(b*m),]))
              }
            } else {
              for(b in 1:B){
@@ -87,7 +87,7 @@
            l.ac.g.b = 0
            if (param.est == T){
              for(b in 1:B){
-               l.ac.g.b = c(l.ac.g.b, .gumb.12.density(fitCopula(gumbelCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = "mpl")@estimate, x[((b-1)*m+1):(b*m),]))
+               l.ac.g.b = c(l.ac.g.b, .gumb.12.density(fitCopula(gumbelCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, x[((b-1)*m+1):(b*m),]))
              }
            } else {
              for(b in 1:B){
@@ -104,7 +104,7 @@
            l.ac.f.b = 0
            if (param.est == T){
              for(b in 1:B){
-               l.ac.f.b = c(l.ac.f.b, .fran.12.density(fitCopula(frankCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = "mpl")@estimate, x[((b-1)*m+1):(b*m),]))
+               l.ac.f.b = c(l.ac.f.b, .fran.12.density(fitCopula(frankCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, x[((b-1)*m+1):(b*m),]))
              }
            } else {
              for(b in 1:B){
@@ -116,16 +116,16 @@
            stat
          },
          tCopula = {
-           psn.sample = qt(x, df = copula@df)
-           l.t = log(.t.12.dens(copula@parameters, psn.sample, nu = copula@df))
+           psn.sample = qt(x, df = tail(copula@parameters, n = 1))
+           l.t = log(.t.12.dens(copula@parameters[-length(copula@parameters)], psn.sample, nu = tail(copula@parameters, n = 1)))
            l.t.b = 0
            if (param.est == T){
              for(b in 1:B){
-               l.t.b = c(l.t.b, .t.12.dens(fitCopula(tCopula(dim = dims, df = copula@df, df.fixed = T), data = x[-(((b-1)*m+1):(b*m)),], method = "mpl")@estimate, psn.sample[((b-1)*m+1):(b*m),], nu = copula@df))
+               l.t.b = c(l.t.b, .t.12.dens(fitCopula(tCopula(dim = dims, df = tail(copula@parameters, n = 1), df.fixed = T), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, psn.sample[((b-1)*m+1):(b*m),], nu = tail(copula@parameters, n = 1)))
              }
            } else {
              for(b in 1:B){
-               l.t.b = c(l.t.b, .t.12.dens(copula@parameters, psn.sample[((b-1)*m+1):(b*m),], nu = copula@df))
+               l.t.b = c(l.t.b, .t.12.dens(copula@parameters[-length(copula@parameters)], psn.sample[((b-1)*m+1):(b*m),], nu = tail(copula@parameters, n = 1)))
              }
            }
            l.t.b = l.t.b[-1]
@@ -146,7 +146,7 @@
            l.ac.c.b = 0
            if (param.est == T){
              for(b in 1:B){
-               l.ac.c.b = c(l.ac.c.b, .clay.123.density(fitCopula(claytonCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = "mpl")@estimate, x[((b-1)*m+1):(b*m),]))
+               l.ac.c.b = c(l.ac.c.b, .clay.123.density(fitCopula(claytonCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, x[((b-1)*m+1):(b*m),]))
              }
            } else {
              for(b in 1:B){
@@ -162,7 +162,7 @@
            l.ac.g.b = 0
            if (param.est == T){
              for(b in 1:B){
-               l.ac.g.b = c(l.ac.g.b, .gumb.123.density(fitCopula(gumbelCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = "mpl")@estimate, x[((b-1)*m+1):(b*m),]))
+               l.ac.g.b = c(l.ac.g.b, .gumb.123.density(fitCopula(gumbelCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, x[((b-1)*m+1):(b*m),]))
              }
            } else {
              for(b in 1:B){
@@ -179,7 +179,7 @@
            l.ac.f.b = 0
            if (param.est == T){
              for(b in 1:B){
-               l.ac.f.b = c(l.ac.f.b, .fran.123.density(fitCopula(frankCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = "mpl")@estimate, x[((b-1)*m+1):(b*m),]))
+               l.ac.f.b = c(l.ac.f.b, .fran.123.density(fitCopula(frankCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, x[((b-1)*m+1):(b*m),]))
              }
            } else {
              for(b in 1:B){
@@ -238,9 +238,9 @@
            stat
          },
          tCopula = {
-           psn.sample = qt(x, df = copula@df)
+           psn.sample = qt(x, df = tail(copula@parameters, n = 1))
            Int_Grid = createIntegrationGrid("GQU", dimension = dims, k = nodes.Integration)
-           bootsample = rCopula(MJ, tCopula(copula@parameters, df = copula@df, dim = dims, dispstr = copula@dispstr))
+           bootsample = rCopula(MJ, tCopula(copula@parameters[-length(copula@parameters)], df = tail(copula@parameters, n = 1), dim = dims, dispstr = copula@dispstr))
            h = as.vector((diag(2.6073*n^(-1/6)*chol(cov(x))) * delta.J))
            Jn_c = c()
            for(i in 1:dim(Int_Grid$nodes)[1]){

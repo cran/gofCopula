@@ -1,9 +1,9 @@
 gof = function(x, priority = "tests", copula = NULL, tests = NULL, margins = "ranks", dispstr = "ex", M = 50, MJ = 50, param = 0.5, param.est = T, df = 4, df.est = T, m = 1, delta.J = 0.5, nodes.Integration = 12, m_b = 0.5, zeta.m = 0, b_Rn = 0.05, processes = 1){
   if (is.matrix(x) == F){stop("x must be a matrix")}
   if(any(lapply(tests, function(x){is.element(x,c("gofPIOSRn", "gofPIOSTn", "gofKernel", "gofRosenblattSnB", 
-                                                                 "gofRosenblattSnC", "gofRosenblattChisq", "gofRosenblattGamma", 
-                                                                 "gofSn", "gofKendallCvM", "gofKendallKS",
-                                                                 "gofWhite", "gofRn", "gofADChisq", "gofADGamma"))}) == F)==T){stop("At least one of the tests in 'testset' is not implemented")}
+                                                  "gofRosenblattSnC", "gofADChisq", "gofADGamma", 
+                                                  "gofSn", "gofKendallCvM", "gofKendallKS",
+                                                  "gofWhite", "gofRn"))}) == F)==T){stop("At least one of the tests in 'testset' is not implemented")}
   if(any(lapply(copula, function(x){is.element(x,c("normal", "gaussian", "t", "clayton", "frank", "gumbel"))}) == F)==T){stop("At least one of the copulae is not implemented")}
   if (is.element(priority, c("tests", "copula")) == F){
     stop("Please insert a valid character string for the argument priority. It shall be either tests or copula.")

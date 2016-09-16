@@ -1,47 +1,77 @@
-.gofCopulapb = function (copula, x, N = 1000, method = eval(formals(gofTstat)$method), estim.method = eval(formals(fitCopula)$method), processes, ...) 
-{
+.gofCopulapb = function (copula, x, M = 1000, method = eval(formals(.Tstats)$Tstat), estim.method = eval(formals(fitCopula)$method), processes, ...) {
 
-  C.th.n <- fitCopula(copula, x, method = estim.method, 
-                      estimate.variance = FALSE, ...)@copula
+  bs.ac.c = c()
 
-  Tstat <- if (method == "Sn") 
-    gofTstat(x, method = method, copula = C.th.n)
-  else gofTstat(x, method = method)
+  ac.c <- if (method == "Sn") {
+    C.th.n <- fitCopula(copula, x, method = estim.method, 
+                        estimate.variance = FALSE)@copula
+    .Tstats(x, Tstat = method, copula = C.th.n)
+  } else if (method == "Tn" || method == "Kernel" || method == "White") {
+    add.parameters = list(...)$add.parameters
+    .Tstats(x, Tstat = method, copula = copula, add.parameters = add.parameters)
+  } else {
+    .Tstats(x, Tstat = method, copula = copula)
+  } 
   
   if (processes > 1) {
   cl = makeCluster(processes, type = "PSOCK")
   clusterEvalQ(cl, library(copula))
   clusterEvalQ(cl, library(foreach))
   clusterEvalQ(cl, library(gofCopula))
+  if (method == "White") {
+      clusterEvalQ(cl, "BiCopDeriv")
+      clusterEvalQ(cl, "BiCopDeriv2")
+      clusterEvalQ(cl, "BiCopPDF")
+      clusterEvalQ(cl, "ginv")
+  }
   registerDoParallel(cl)
   } else {registerDoSEQ()}
-  T0 = foreach(i=1:N) %dopar% {
+  bs.ac.c = foreach(i=1:M) %dopar% {
     repeat {
-        Uhat = rCopula(nrow(x), C.th.n)
-      C.th.n. <- try(fitCopula(copula, Uhat, method = estim.method, 
-                               estimate.variance = FALSE, ...)@copula, silent = T)
+      xsim = rCopula(nrow(x), copula)
+      C.th.n. <- try(fitCopula(copula, xsim, method = estim.method, 
+                               estimate.variance = FALSE)@copula, silent = T)
       if (class(C.th.n.) != "try-error"){break}
     }
-    u. = Uhat
-    T0. <- if (method == "Sn") 
-      gofTstat(u., method = method, copula = C.th.n.)
-    else gofTstat(u., method = method)
-    T0.
+    if (method == "Sn") {
+      .Tstats(xsim, Tstat = method, copula = C.th.n.)
+    } else if (method == "Tn" || method == "Kernel" || method == "White") {
+      .Tstats(xsim, Tstat = method, copula = C.th.n., add.parameters = add.parameters)
+    } else {
+      .Tstats(xsim, Tstat = method, copula = C.th.n.)
+    }
   }
   if (processes > 1) {stopCluster(cl)}
   
+  ac.c = as.numeric(ac.c)
+  bs.ac.c = as.numeric(bs.ac.c)
+  test = sum(abs(bs.ac.c) >= abs(ac.c))/M
   
   switch(method,
          SnB = {matrix_names = "RosenblattSnB"},
          SnC = {matrix_names = "RosenblattSnC"},
          AnChisq = {matrix_names = "RosenblattChisq"},
          AnGamma = {matrix_names = "RosenblattGamma"},
-         Sn = {matrix_names = "Sn"})
+         Sn = {matrix_names = "Sn"},
+         Rn = {matrix_names = "PIOSRn"},
+         Tn = {matrix_names = "PIOSTn"},
+         Kernel = {matrix_names = "Kernel"},
+         SnK = {matrix_names = "KendallCvM"},
+         TnK = {matrix_names = "KendallKS"},
+         White = {matrix_names = "White"})
+  switch(class(copula),
+         normalCopula = {cop_name = "normal"},
+         tCopula = {cop_name = "t"},
+         gumbelCopula = {cop_name = "gumbel"},
+         claytonCopula = {cop_name = "clayton"},
+         frankCopula = {cop_name = "frank"})
   structure(class = "gofCOP", 
-            list(method = sprintf("Parametric bootstrap goodness-of-fit test with %s test", 
-                                                   matrix_names),
-                 erg.tests = matrix(c(sum(abs(as.numeric(T0)) >= abs(Tstat))/N, Tstat, copula@parameters, if(class(try(copula@df, silent = TRUE)) == "try-error") {NULL} else {copula@df}), ncol = if(class(try(copula@df, silent = TRUE)) == "try-error") {2 + length(copula@parameters)} else {3 + length(copula@parameters)},  
-                                    dimnames = list(matrix_names, if(class(try(copula@df, silent = TRUE)) == "try-error") {c("p.value", "test statistic", paste("rho.", 1:length(copula@parameters), sep=""))} else {c("p.value", "test statistic", paste("rho.", 1:length(copula@parameters), sep=""), "df")}))))
-  
+            list(method = sprintf("Parametric bootstrap goodness-of-fit test with %s test and %s copula", 
+                                                   matrix_names, cop_name),
+                 erg.tests = matrix(c(test, ac.c, copula@parameters), ncol = 2 + length(copula@parameters),  
+                                    dimnames = list(matrix_names, if(class(copula) != "tCopula") {c("p.value", 
+                                        "test statistic", paste("rho.", 1:length(copula@parameters), sep=""))} else {
+                                            c("p.value", "test statistic", paste("rho.", 1:(length(copula@parameters)-1), 
+                                                                                 sep=""), "df")}))))
 }
 

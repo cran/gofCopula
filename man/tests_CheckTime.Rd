@@ -7,7 +7,7 @@
 The computation of a gof test can take very long, especially when the number of bootstrap rounds is high. The function \code{\link{gofCheckTime}} computes the time which the estimation most likely take.
 }
 \usage{
-gofCheckTime(copula, x, test, M, MJ, print.res = T, margins = "ranks", 
+gofCheckTime(copula, x, test, M = 1000, MJ = 10000, print.res = T, margins = "ranks", 
               dispstr = "ex", param = 0.5, param.est = T, df = 4, df.est = T, 
               m = 1, delta.J = 0.5, nodes.Integration = 12, m_b = 0.5, 
               zeta.m = 0, b_Rn = 0.05, processes = 1)

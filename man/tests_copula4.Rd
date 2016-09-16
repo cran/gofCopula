@@ -70,7 +70,7 @@ A object of the \code{class} gofCOP with the components
 \references{
 Rosenblatt, M. (1952). Remarks on a Multivariate Transformation. \emph{The Annals of Mathematical Statistics 23, 3, 470-472}.\cr \cr
 Hering, C. and Hofert, M. (2014). Goodness-of-fit tests for Archimedean copulas in high dimensions. \emph{Innovations in Quantitative Risk Management}.\cr \cr
-Marius Hofert, Ivan Kojadinovic, Martin Maechler, Jun Yan (2014). copula: Multivariate Dependence with Copulas. \emph{R package version 0.999-12.}. \url{http://CRAN.R-project.org/package=copula} \cr \cr
+Marius Hofert, Ivan Kojadinovic, Martin Maechler, Jun Yan (2014). copula: Multivariate Dependence with Copulas. \emph{R package version 0.999-15.}. \url{https://cran.r-project.org/package=copula} \cr \cr
 }
 \examples{
 data(IndexReturns)
