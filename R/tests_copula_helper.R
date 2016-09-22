@@ -2,9 +2,12 @@
 
   bs.ac.c = c()
 
+  C.th.n <- fitCopula(copula, x, method = estim.method, 
+                      estimate.variance = FALSE)@copula
+  if (is.element(method, c("SnB", "SnC", "AnChisq", "AnGamma"))){
+      x = do.call(cCopula, c(list(x, copula = C.th.n)))
+  }
   ac.c <- if (method == "Sn") {
-    C.th.n <- fitCopula(copula, x, method = estim.method, 
-                        estimate.variance = FALSE)@copula
     .Tstats(x, Tstat = method, copula = C.th.n)
   } else if (method == "Tn" || method == "Kernel" || method == "White") {
     add.parameters = list(...)$add.parameters
@@ -32,6 +35,9 @@
       C.th.n. <- try(fitCopula(copula, xsim, method = estim.method, 
                                estimate.variance = FALSE)@copula, silent = T)
       if (class(C.th.n.) != "try-error"){break}
+    }
+    if (is.element(method, c("SnB", "SnC", "AnChisq", "AnGamma"))){
+        xsim = do.call(cCopula, c(list(xsim, copula = C.th.n.)))
     }
     if (method == "Sn") {
       .Tstats(xsim, Tstat = method, copula = C.th.n.)

@@ -4,7 +4,7 @@ gofco = function(copulaobject, x, testset = c("gofPIOSRn", "gofKernel"), margins
   if (is.matrix(x) == F){stop("x must be a matrix")}
   switch(class(copulaobject),
          normalCopula = {copula = "normal"; param = copulaobject@parameters; param.est = if (is.na(copulaobject@parameters)){T} else {F}; df = 4; df.est = T; dispstr = copulaobject@dispstr},
-         tCopula = {copula = "t"; param = if (copulaobject@df.fixed == T) {copulaobject@parameters} else if (copulaobject@df.fixed == F) {copulaobject@parameters[-length(copulaobject@parameters)]}; param.est = if (is.na(copulaobject@parameters[1])){T} else {F}; df = copulaobject@df; df.est = if (copulaobject@df.fixed == F) {T} else if (copulaobject@df.fixed == T) {F}; dispstr = copulaobject@dispstr},
+         tCopula = {copula = "t"; param = copulaobject@parameters[-length(copulaobject@parameters)]; param.est = if (is.na(copulaobject@parameters[1])){T} else {F}; df = copulaobject@parameters[length(copulaobject@parameters)]; df.est = if (copulaobject@df.fixed == F) {T} else if (copulaobject@df.fixed == T) {F}; dispstr = copulaobject@dispstr},
          claytonCopula = {copula = "clayton"; param = copulaobject@parameters; param.est = if (is.na(copulaobject@parameters)){T} else {F}; df = 4; df.est = T},
          frankCopula = {copula = "frank"; param = copulaobject@parameters; param.est = if (is.na(copulaobject@parameters)){T} else {F}; df = 4; df.est = T},
          gumbelCopula = {copula = "gumbel"; param = copulaobject@parameters; param.est = if (is.na(copulaobject@parameters)){T} else {F}; df = 4; df.est = T},

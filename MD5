@@ -1,5 +1,5 @@
 0864fb80cba16059c85be84458fb44be *ChangeLog
-61e02decfda2e16517430cfc53d1a9b4 *DESCRIPTION
+3fca899bdbcbc2c17386f9873302a021 *DESCRIPTION
 ac4d659aa3bc978126d9f3436b90cd04 *NAMESPACE
 7b0fa4e15215e9b97a25345f2e732886 *R/AD_tests_stop.R
 d91ebb6c5ddad8cffa6bc99feab013be *R/Rn_tests_stop.R
@@ -15,10 +15,10 @@ bbf11193aa27e32448b9f32ba1c76033 *R/goftime.R
 a6425060608c16ba518f78bf4d8e9e91 *R/margin_param_est.R
 c330132f41f5ff2910cd27ea03e25989 *R/tests.R
 87972c58afc2d6d1baaf6a8f90bfd6b3 *R/tests_CheckTime.R
-14d1441919a1b8520eb72e89dc9aec0f *R/tests_copula_helper.R
+4295ce26280cb2a605e201376eb1e2f1 *R/tests_copula_helper.R
 53311890c39d2fb1943296322be2f7c5 *R/tests_copula_new.R
 08a106f30f086b337b916e17d4d51a1c *R/tests_gof.R
-1cf5d52013df305f31bc092e84afd475 *R/tests_gofco.R
+f1555ff52d1eb16dc43ea98afd98ad59 *R/tests_gofco.R
 fc0b7ac9564230795279aad212661e00 *R/tests_hybrid.R
 6a9b9d949511ea36a9a7b8a4e4d95321 *R/tests_stat_PIOS.R
 245eb7f9ce4fee128b19c38237a15882 *R/tests_vine11.R
@@ -36,7 +36,7 @@ e0ea97580c0e54e18ac60476927cfd41 *man/Rn_tests_stop.Rd
 db4515d57621bb67b5d2f666b2620f87 *man/tests11.Rd
 0c43f912c0aefcf256c56653576a098c *man/tests12.Rd
 8bd6b13a3ddfaeddf81395b5a32815fa *man/tests2.Rd
-84a34325490b58934ebd10cff6d881de *man/tests_CheckTime.Rd
+5ffcb6005a022af1d1011ad6cc6d947d *man/tests_CheckTime.Rd
 d5b6842aa2eef71ba68b3279cf5d724a *man/tests_copula1.Rd
 bf2c41d19640b73dd27c6e728694e1ed *man/tests_copula2.Rd
 22dc4d81ece74f0510672c185b4182f0 *man/tests_copula4.Rd

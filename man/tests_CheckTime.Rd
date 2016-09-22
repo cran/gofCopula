@@ -76,5 +76,5 @@ The function estimates the time which the entire gof test will take.
 \examples{
 data(IndexReturns)
 
-gofCheckTime("normal", IndexReturns[c(1:50),c(1:2)], "gofRosenblattSnB", M = 10000)
+gofCheckTime("normal", IndexReturns[c(1:50),c(1:2)], "gofRosenblattSnC", M = 10000)
 }
