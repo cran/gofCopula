@@ -7,7 +7,7 @@
   x.remainder = x.remainder%%60
   out = list(x.day, x.hour, x.min, x.remainder)
   class(out) = "goftime"
-  out
+  if (any(!is.na(unlist(out)))) out
 }
 
 print.goftime = function(x, ...){

@@ -13,9 +13,9 @@ gofCheckTime = function(copula, x, test, M = 1000, MJ = 10000, print.res = T, ma
       }
       times.comp = cbind(sort(rep(N, length(N))), rep(NJ, length(NJ)), times.comp)
       times.comp.mult = times.comp[, 2]*times.comp[, 1]
-      times.lm.init = lm(times.comp[, 3] ~ times.comp.mult)
-      times.lm = nls(times.comp[, 3] ~ exp(b0) + exp(b1) * times.comp.mult, start = list(b0 = times.lm.init$coefficients[1], b1 = times.lm.init$coefficients[2]))
-      lasted.time[j] = round(exp(summary(times.lm)$coefficients[1,1]) + exp(summary(times.lm)$coefficients[2,1]) * MJ * M)
+      times.lm = lm(times.comp[, 3] ~ times.comp.mult)
+      lasted.time[j] = round(times.lm$coefficients[1] + times.lm$coefficients[2] * MJ * M)
+      if (lasted.time[j] < 0) {print(paste0("Derivation time could not be computed for ", test[j])); lasted.time[j] = NA}
   #    options(show.error.messages = TRUE)
     } else {
  #     options(show.error.messages = FALSE)
@@ -23,9 +23,9 @@ gofCheckTime = function(copula, x, test, M = 1000, MJ = 10000, print.res = T, ma
         times.comp = rbind(times.comp, system.time(suppressWarnings(gofHybrid(copula = copula, x = x, dispstr = dispstr, testset = test[j], M = i, execute.times.comp = F, margins = margins, param = param, param.est = param.est, df = df, df.est = df.est, MJ = MJ, delta.J = delta.J, nodes.Integration = nodes.Integration, m_b = m_b, zeta.m = zeta.m, b_Rn = b_Rn, m = m, processes = processes)))[3])
       }
       times.comp = cbind(N, times.comp)
-      times.lm.init = lm(times.comp[, 2] ~ times.comp[, 1])
-      times.lm = nls(times.comp[, 2] ~ exp(b0) + exp(b1) * times.comp[, 1], start = list(b0 = times.lm.init$coefficients[1], b1 = times.lm.init$coefficients[2]))
-      lasted.time[j] = round(exp(summary(times.lm)$coefficients[1,1]) + exp(summary(times.lm)$coefficients[2,1]) * M)
+      times.lm = lm(times.comp[, 2] ~ times.comp[, 1])
+      lasted.time[j] = round(times.lm$coefficients[1] + times.lm$coefficients[2] * M)
+      if (lasted.time[j] < 0) {print(paste0("Derivation time could not be computed for ", test[j])); lasted.time[j] = NA}
 #      options(show.error.messages = TRUE)
     }
   }

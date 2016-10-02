@@ -9,6 +9,6 @@ gofKendallKS = function(copula = c("normal", "t", "clayton", "frank", "gumbel"),
     print(.get.time(times.comp))
   }
   erg = .margins.param.est(copula=copula, margins=margins, x=x, param=param, param.est=param.est, df=df, df.est=df.est, dispstr=dispstr)
-  res = try(.gofCopulapb(copula = erg[[1]], x = erg[[2]], M = M, method = "TnK", estim.method = "mpl", processes = processes), silent = T)
-  if (class(res) == "try-error"){warning("Pseudo Maximum Likelihood estimation of the parameters while the bootstrapping procedure failed. The estimation was performed with inversion of Kendall's Tau."); .gofCopulapb(copula = erg[[1]], x = erg[[2]], M = M, method = "TnK", estim.method = "itau", processes = processes)} else {res}
+  res = try(.gofCopulapb(copula = erg[[1]], x = erg[[2]], M = M, method = "TnK", estim.method = "mpl", processes = processes, param.est = param.est, df.est = df.est, dispstr=dispstr), silent = T)
+  if (class(res) == "try-error"){warning("Pseudo Maximum Likelihood estimation of the parameters while the bootstrapping procedure failed. The estimation was performed with inversion of Kendall's Tau."); .gofCopulapb(copula = erg[[1]], x = erg[[2]], M = M, method = "TnK", estim.method = "itau", processes = processes, param.est = param.est, df.est = df.est, dispstr=dispstr)} else {res}
 }

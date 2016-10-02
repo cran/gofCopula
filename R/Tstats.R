@@ -15,6 +15,6 @@
     .TnK(x = x, cop = copula)
   } else if (Tstat == "White") {
       add.parameters = list(...)$add.parameters
-      BiCopGofTest(u1 = x[,1], u2 = x[,2], family = add.parameters[[1]], par = copula@parameters, par2 = if(class(copula) == "tCopula"){copula@df}else{0}, method = "white", B = 0)$statistic
+      BiCopGofTest(u1 = x[,1], u2 = x[,2], family = add.parameters[[1]], par = if(class(copula) == "tCopula"){copula@parameters[-length(copula@parameters)]}else{copula@parameters}, par2 = if(class(copula) == "tCopula"){copula@parameters[length(copula@parameters)]}else{0}, method = "white", B = 0)$statistic
   }
 }
