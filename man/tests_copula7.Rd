@@ -82,5 +82,5 @@ Marius Hofert, Ivan Kojadinovic, Martin Maechler, Jun Yan (2014). copula: Multiv
 \examples{
 data(IndexReturns)
 
-gofRosenblattGamma("normal", IndexReturns[c(1:100),c(1:2)], M = 20)
+gofRosenblattGamma("normal", IndexReturns[c(1:100),c(1:2)], M = 10)
 }

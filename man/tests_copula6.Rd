@@ -77,5 +77,5 @@ Marius Hofert, Ivan Kojadinovic, Martin Maechler, Jun Yan (2014). copula: Multiv
 \examples{
 data(IndexReturns)
 
-gofRosenblattSnC("normal", IndexReturns[c(1:100),c(1:2)], M = 20)
+gofRosenblattSnC("normal", IndexReturns[c(1:100),c(1:2)], M = 10)
 }

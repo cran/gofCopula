@@ -86,5 +86,5 @@ A list containing several objects of \code{class} gofCOP with the following comp
 data(IndexReturns)
 
 gof(IndexReturns[c(1:100),c(1:2)], priority = "tests", copula = "normal", 
-tests = c("gofRosenblattSnB", "gofRosenblattSnC"), M = 20)
+tests = c("gofRosenblattSnB", "gofRosenblattSnC"), M = 10)
 }

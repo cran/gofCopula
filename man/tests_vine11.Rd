@@ -70,7 +70,7 @@ A object of the \code{class} gofCOP with the components
 }
 \references{
 Christian Genest, Bruno Remillard, David Beaudoin (2009). Goodness-of-fit tests for copulas: A review and a power study. \emph{Insurance: Mathematics and Economics, Volume 44, Issue 2, April 2009, Pages 199-213, ISSN 0167-6687}. \url{http://dx.doi.org/10.1016/j.insmatheco.2007.10.005}\cr \cr
-Christian Genest, Jean-Francois Quessy, Bruno Remillard (2002). Tests of serial independence based on Kendall's process. \emph{The Canadian Journal of Statistics, Volume 30, Issue 3, Sep. 2002, Pages 441-461}. \url{http://www.jstor.org/stable/3316147}\cr \cr
+Christian Genest, Jean-Francois Quessy, Bruno Remillard (2002). Tests of serial independence based on Kendall's process. \emph{The Canadian Journal of Statistics, Volume 30, Issue 3, Sep. 2002, Pages 441-461}. \url{https://www.jstor.org/stable/3316147}\cr \cr
 cp. Ulf Schepsmeier, Jakob Stoeber, Eike Christian Brechmann, Benedikt Graeler (2015). VineCopula: Statistical Inference of Vine Copulas. \emph{R package version 1.4.}. \url{https://cran.r-project.org/package=VineCopula}
 }
 \examples{

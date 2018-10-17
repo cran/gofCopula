@@ -75,5 +75,5 @@ Marius Hofert, Ivan Kojadinovic, Martin Maechler, Jun Yan (2014). copula: Multiv
 \examples{
 data(IndexReturns)
 
-gofSn("normal", IndexReturns[c(1:100),c(1:2)], M = 20)
+gofSn("normal", IndexReturns[c(1:100),c(1:2)], M = 10)
 }

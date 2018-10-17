@@ -83,5 +83,5 @@ parameters in multivariate families of distributions. \emph{Biometrika, 82:534-5
 \examples{
 data(IndexReturns)
 
-gofPIOSRn("normal", IndexReturns[c(1:100),c(1:2)], M = 20)
+gofPIOSRn("normal", IndexReturns[c(1:100),c(1:2)], M = 10)
 }

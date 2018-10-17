@@ -25,7 +25,7 @@ gofHybrid = function(copula, x, testset = c("gofPIOSRn", "gofKernel"), margins =
   print(.get.time(times.comp))
   }
   
-  res_list = lapply(testset, function(k) tryCatch(doCall(.fcn = k, copula = copula, x = x, margins = margins, M = M, execute.times.comp = F, param = param, param.est = param.est, df = df, df.est = df.est, dispstr = dispstr, MJ = MJ, delta.J = delta.J, nodes.Integration = nodes.Integration, m = m, processes = processes)$erg.tests, error = function(e) warning(e)))
+  res_list = mapply(function(k, Ms) tryCatch(doCall(.fcn = k, copula = copula, x = x, margins = margins, M = Ms, execute.times.comp = F, param = param, param.est = param.est, df = df, df.est = df.est, dispstr = dispstr, MJ = MJ, delta.J = delta.J, nodes.Integration = nodes.Integration, m = m, processes = processes)$erg.tests, error = function(e) warning(e)), testset, M, SIMPLIFY = FALSE)
   if (any(lapply(res_list, class) != "matrix")) {res_list = res_list[-which(lapply(res_list, class) != "matrix")]}
   res = do.call(rbind, res_list)
     
