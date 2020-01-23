@@ -10,11 +10,15 @@
     add.parameters = list(...)$add.parameters
     .Kernel(x = x, copula = copula, dims = copula@dimension, n = nrow(x), nodes.Integration = add.parameters[[1]], MJ = add.parameters[[2]], delta.J = add.parameters[[3]])
   } else if (Tstat == "SnK") {
-    .SnK(x = x, cop = copula)
+    cop.compare = list(...)$cop.compare
+    .SnK(x = x, cop = cop.compare)
   } else if (Tstat == "TnK") {
-    .TnK(x = x, cop = copula)
+    cop.compare = list(...)$cop.compare
+    .TnK(x = x, cop = cop.compare)
   } else if (Tstat == "White") {
       add.parameters = list(...)$add.parameters
-      BiCopGofTest(u1 = x[,1], u2 = x[,2], family = add.parameters[[1]], par = if(class(copula) == "tCopula"){copula@parameters[-length(copula@parameters)]}else{copula@parameters}, par2 = if(class(copula) == "tCopula"){copula@parameters[length(copula@parameters)]}else{0}, method = "white", B = 0)$statistic
+      BiCopGofTest(u1 = x[, 1], u2 = x[, 2], family = add.parameters[[1]], par = if(class(copula) == "tCopula"){copula@parameters[-length(copula@parameters)]}else{copula@parameters}, par2 = if(class(copula) == "tCopula"){copula@parameters[length(copula@parameters)]}else{0}, method = "white", B = 0)$statistic
+  } else if (!is.null(Tstat)) {
+    doCall(Tstat, x = x, copula = copula)
   }
 }

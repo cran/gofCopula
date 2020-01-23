@@ -4,22 +4,19 @@
 \title{Gof test using the Anderson-Darling test statistic and the gamma distribution
 }
 \description{
-\code{\link{gofRosenblattGamma}} contains the RosenblattGamma gof tests for copulae, described in Genest (2009) and Hofert (2014), and compares the empirical copula against a parametric estimate of the copula derived under the null hypothesis. The margins can be estimated by a bunch of distributions and the time which is necessary for the estimation can be given. The approximate p-values are computed with a parametric bootstrap, which computation can be accelerated by enabling in-build parallel computation. The gof statistics are computed with the function \code{\link{gofTstat}} from the package copula. It is possible to insert datasets of all dimensions above 1 and the possible copulae are "normal", "t", "gumbel", "clayton" and "frank". The parameter estimation is performed with pseudo maximum likelihood method. In case the estimation fails, inversion of Kendall's tau is used.
+\code{\link{gofRosenblattGamma}} contains the RosenblattGamma gof tests for copulae, described in Genest (2009) and Hofert (2014), and compares the empirical copula against a parametric estimate of the copula derived under the null hypothesis. The margins can be estimated by a bunch of distributions and the time which is necessary for the estimation can be given. The approximate p-values are computed with a parametric bootstrap, which computation can be accelerated by enabling in-build parallel computation. The gof statistics are computed with the function \code{\link{gofTstat}} from the package copula. It is possible to insert datasets of all dimensions above 1 and the possible copulae are \code{"normal"}, \code{"t"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}. The parameter estimation is performed with pseudo maximum likelihood method. In case the estimation fails, inversion of Kendall's tau is used.
 }
 \usage{
-gofRosenblattGamma(copula, x, M = 1000, param = 0.5, param.est = T, df = 4, 
-                    df.est = T, margins = "ranks", dispstr = "ex", 
-                    execute.times.comp = T, processes = 1)
+gofRosenblattGamma(copula, x, param = 0.5, param.est = TRUE, df = 4, 
+                    df.est = TRUE, margins = "ranks", M = 1000, dispstr = "ex", 
+                    seed.active = NULL, processes = 1)
 }
 \arguments{
 \item{copula}{
-The copula to test for. Possible are \code{"normal"}, \code{"t"}, \code{"clayton"} and \code{"gumbel"}.
+The copula to test for. Possible are \code{"normal"}, \code{"t"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}.
 }
   \item{x}{
-A matrix containing the residuals of the data.
-}
-  \item{M}{
-Number of bootstrapping loops.
+A matrix containing the data. 
 }
 \item{param}{
 The copula parameter to use, if it shall not be estimated.
@@ -28,24 +25,28 @@ The copula parameter to use, if it shall not be estimated.
 Shall be either \code{TRUE} or \code{FALSE}. \code{TRUE} means that \code{param} will be estimated.
 }
 \item{df}{
-Degrees of freedom, if not meant to be estimated. Only necessary if tested for \code{"t"}-copula.
+Degrees of freedom, if not meant to be estimated. Only necessary if tested for \code{"t"}-copula. 
 }
 \item{df.est}{
-Indicates if \code{df} shall be estimated. Has to be either \code{FALSE} or \code{TRUE}, where \code{TRUE} means that it will be estimated.
+Indicates if \code{df} shall be estimated. Has to be either \code{FALSE} or \code{TRUE}, where \code{TRUE} means that it will be estimated. 
 }
 \item{margins}{
-Specifies which estimation method shall be used in case that the input data are not in the range [0,1]. The default is \code{"ranks"}, which is the standard approach to convert data in such a case. Alternatively can the following distributions be specified: \code{"beta"}, \code{"cauchy"}, Chi-squared (\code{"chisq"}), \code{"f"}, \code{"gamma"}, Log normal (\code{"lnorm"}), Normal (\code{"norm"}), \code{"t"}, \code{"weibull"}, Exponential (\code{"exp"}).
+Specifies which estimation method for the margins shall be used. The default is \code{"ranks"}, which is the standard approach to convert data in such a case. Alternatively the following distributions can be specified: \code{"beta"}, \code{"cauchy"}, Chi-squared (\code{"chisq"}), \code{"f"}, \code{"gamma"}, Log normal (\code{"lnorm"}), Normal (\code{"norm"}), \code{"t"}, \code{"weibull"}, Exponential (\code{"exp"}). Input can be either one method, e.g. \code{"ranks"}, which will be used for estimation of all data sequences. Also an individual method for each margin can be specified, e.g. \code{c("ranks", "norm", "t")} for 3 data sequences. If one does not want to estimate the margins, set it to \code{NULL}.
+}
+  \item{M}{
+Number of bootstrapping loops.
 }
 \item{dispstr}{
 A character string specifying the type of the symmetric positive definite matrix characterizing the elliptical copula. Implemented structures are "ex" for exchangeable and "un" for unstructured, see package \code{copula}.
 }
-\item{execute.times.comp}{
-Logical. Defines if the time which the estimation most likely takes shall be computed. It'll be just given if \code{M} is at least 100.
+\item{seed.active}{
+Has to be either an integer or a vector of M+1 integers. If an integer, then the seeds for the bootstrapping procedure will be simulated. If M+1 seeds are provided, then these seeds are used in the bootstrapping procedure. Defaults to \code{NULL}, then \code{R} generates the seeds from the computer runtime. Controlling the seeds is useful for reproducibility of a simulation study to compare the power of the tests or for reproducibility of an empirical study.
 }
 \item{processes}{
 The number of parallel processes which are performed to speed up the bootstrapping. Shouldn't be higher than the number of logical processors. Please see the details.}
 }
 \details{
+This Anderson-Darling test statistic (supposedly) computes U[0,1]-distributed (under \eqn{H_0}{H0}) random variates via the distribution function of the gamma distribution, see Hofert et al. (2014).
 As written in Hofert et al. (2014) computes this Anderson-Darling test statistic for (supposedly) U[0,1]-distributed (under H_0) random variates via the distribution function of the gamma distribution. The \eqn{H_0}{H0} hypothesis is 
 \deqn{C \in \mathcal{C}_0}{C in Ccal0}
 with \eqn{\mathcal{C}_0}{Ccal0} as the true class of copulae under \eqn{H_0}{H0}. 
@@ -68,19 +69,24 @@ The approximate p-value is computed by the formula,
 
 where \eqn{T} and \eqn{T_b}{T[b]} denote the test statistic and the bootstrapped test statistc, respectively.
 
-For small values of \code{M}, initializing the parallization via \code{processes} does not make sense. The registration of the parallel processes increases the computation time. Please consider to enable parallelization just for high values of \code{M}.
+For small values of \code{M}, initializing the parallelisation via \code{processes} does not make sense. The registration of the parallel processes increases the computation time. Please consider to enable parallelisation just for high values of \code{M}.
 }
 \value{
-A object of the \code{class} gofCOP with the components
+An object of the \code{class} gofCOP with the components
 \item{method}{a character which informs about the performed analysis}
-\item{erg.tests}{a matrix with the p-value and test statistic of test}
+\item{copula}{the copula tested for}
+\item{margins}{the method used to estimate the margin distribution.}
+\item{param.margins}{the parameters of the estimated margin distributions. Only applicable if the margins were not specified as \code{"ranks"} or \code{NULL}.}
+\item{theta}{dependence parameters of the copulae}
+\item{df}{the degrees of freedem of the copula. Only applicable for t-copula.}
+\item{res.tests}{a matrix with the p-values and test statistics of the hybrid and the individual tests}
 }
 \references{
 Christian Genest, Bruno Remillard, David Beaudoin (2009). Goodness-of-fit tests for copulas: A review and a power study. \emph{Insurance: Mathematics and Economics, Volume 44, Issue 2, April 2009, Pages 199-213, ISSN 0167-6687}. \url{http://dx.doi.org/10.1016/j.insmatheco.2007.10.005}\cr \cr
 Marius Hofert, Ivan Kojadinovic, Martin Maechler, Jun Yan (2014). copula: Multivariate Dependence with Copulas. \emph{R package version 0.999-15.}. \url{https://cran.r-project.org/package=copula} \cr \cr
 }
 \examples{
-data(IndexReturns)
+data(IndexReturns2D)
 
-gofRosenblattGamma("normal", IndexReturns[c(1:100),c(1:2)], M = 10)
+gofRosenblattGamma("normal", IndexReturns2D, M = 10)
 }

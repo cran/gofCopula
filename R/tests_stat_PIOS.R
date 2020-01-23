@@ -2,15 +2,15 @@
   switch(dims-1, {
   switch(class(copula),
          claytonCopula = {
-           Rn.ac.c = -sum(.V.clay.12(copula@parameters, x[,1], x[,2])^2) / sum(.S.clay.12(copula@parameters, x[,1], x[,2])) - 1
+           Rn.ac.c = -sum(.V.clay.12(copula@parameters, x[, 1], x[, 2])^2) / sum(.S.clay.12(copula@parameters, x[, 1], x[, 2])) - 1
            Rn.ac.c
          },
          gumbelCopula = {
-           Rn.ac.g = -sum(.V.gumb.12(copula@parameters, x[,1], x[,2])^2) / sum(.S.gumb.12(copula@parameters, x[,1], x[,2])) - 1
+           Rn.ac.g = -sum(.V.gumb.12(copula@parameters, x[, 1], x[, 2])^2) / sum(.S.gumb.12(copula@parameters, x[, 1], x[, 2])) - 1
            Rn.ac.g
          },
          frankCopula = {
-           Rn.ac.f = -sum(.V.fran.12(copula@parameters, x[,1], x[,2])^2) / sum(.S.fran.12(copula@parameters, x[,1], x[,2])) - 1
+           Rn.ac.f = -sum(.V.fran.12(copula@parameters, x[, 1], x[, 2])^2) / sum(.S.fran.12(copula@parameters, x[, 1], x[, 2])) - 1
            Rn.ac.f
          },
          tCopula = {
@@ -19,10 +19,10 @@
            Rn.t
          },
          normalCopula = {
-           sig = matrix(c(1, copula@parameters, copula@parameters, 1), ncol = 2, byrow = T)
-           sig.inv = rbind(c(sig[1,1], -sig[1,2]), c(-sig[2,1], sig[2,2]))/det(sig)
+           sig = matrix(c(1, copula@parameters, copula@parameters, 1), ncol = 2, byrow = TRUE)
+           sig.inv = rbind(c(sig[1, 1], -sig[1, 2]), c(-sig[2, 1], sig[2, 2]))/det(sig)
            psn.sample = qnorm(x)
-           Rn.g = -sum(apply(psn.sample, 1, FUN = .V.ga, sig.inv = sig.inv, dims = dims)[2,]^2)/sum(apply(psn.sample, 1, FUN = .S.ga.12, sig =sig)) - 1
+           Rn.g = -sum(apply(psn.sample, 1, FUN = .V.ga, sig.inv = sig.inv, dims = dims)[2,]^2)/sum(apply(psn.sample, 1, FUN = .S.ga.12, sig = sig)) - 1
            Rn.g
          })
   },
@@ -48,8 +48,8 @@
              sig.inv = solve(sig) 
              sig.inv = (sig.inv + t(sig.inv)) / 2
              psn.sample = qnorm(x)
-             V = t(apply(psn.sample, 1, FUN = .V.ga, sig.inv = sig.inv, dims = dims)[c(2,3,6),])
-             V = matrix(colSums(cbind(V[,1]^2, V[,1]*V[,2], V[,1]*V[,3], V[,1]*V[,2], V[,2]^2, V[,2]*V[,3], V[,1]*V[,3], V[,2]*V[,3], V[,3]^2)), ncol = dims)
+             V = t(apply(psn.sample, 1, FUN = .V.ga, sig.inv = sig.inv, dims = dims)[c(2, 3, 6),])
+             V = matrix(colSums(cbind(V[, 1]^2, V[, 1] * V[, 2], V[, 1] * V[, 3], V[, 1] * V[, 2], V[, 2]^2, V[, 2] * V[, 3], V[, 1] * V[, 3], V[, 2] * V[, 3], V[, 3]^2)), ncol = dims)
              S1212 = apply(psn.sample, 1, FUN = .S.ga.12.12, sig = sig)
              S1213 = apply(psn.sample, 1, FUN = .S.ga.12.13, sig = sig)
              S1223 = apply(psn.sample, 1, FUN = .S.ga.12.23, sig = sig)
@@ -64,18 +64,18 @@
 }
 
 .Tn = function(x, copula, B, m, dims, param.est, estim.method) {
-  switch(dims-1, {
+  switch(dims - 1, {
   switch(class(copula),
          claytonCopula = {
            l.ac.c = log(.clay.12.density(copula@parameters, x))
            l.ac.c.b = 0
-           if (param.est == T){
+           if (param.est == TRUE){
              for(b in 1:B){
-               l.ac.c.b = c(l.ac.c.b, .clay.12.density(fitCopula(claytonCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, x[((b-1)*m+1):(b*m),]))
+               l.ac.c.b = c(l.ac.c.b, .clay.12.density(fitCopula(claytonCopula(dim = dims), data = x[-(((b - 1) * m + 1):(b * m)),], method = estim.method, estimate.variance = FALSE)@estimate, x[((b - 1) * m + 1):(b * m),]))
              }
            } else {
              for(b in 1:B){
-               l.ac.c.b = c(l.ac.c.b, .clay.12.density(copula@parameters, x[((b-1)*m+1):(b*m),]))
+               l.ac.c.b = c(l.ac.c.b, .clay.12.density(copula@parameters, x[((b - 1) * m + 1):(b * m),]))
              }
            }
            l.ac.c.b = l.ac.c.b[-1]
@@ -85,13 +85,13 @@
          gumbelCopula = {
            l.ac.g = log(.gumb.12.density(copula@parameters, x))
            l.ac.g.b = 0
-           if (param.est == T){
+           if (param.est == TRUE){
              for(b in 1:B){
-               l.ac.g.b = c(l.ac.g.b, .gumb.12.density(fitCopula(gumbelCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, x[((b-1)*m+1):(b*m),]))
+               l.ac.g.b = c(l.ac.g.b, .gumb.12.density(fitCopula(gumbelCopula(dim = dims), data = x[-(((b - 1) * m + 1):(b * m)),], method = estim.method, estimate.variance = FALSE)@estimate, x[((b - 1) * m + 1):(b * m),]))
              }
            } else {
              for(b in 1:B){
-               l.ac.g.b = c(l.ac.g.b, .gumb.12.density(copula@parameters, x[((b-1)*m+1):(b*m),]))
+               l.ac.g.b = c(l.ac.g.b, .gumb.12.density(copula@parameters, x[((b - 1) * m + 1):(b * m),]))
              }
            }
            
@@ -102,13 +102,13 @@
          frankCopula = {
            l.ac.f = log(.fran.12.density(copula@parameters, x))
            l.ac.f.b = 0
-           if (param.est == T){
+           if (param.est == TRUE){
              for(b in 1:B){
-               l.ac.f.b = c(l.ac.f.b, .fran.12.density(fitCopula(frankCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, x[((b-1)*m+1):(b*m),]))
+               l.ac.f.b = c(l.ac.f.b, .fran.12.density(fitCopula(frankCopula(dim = dims), data = x[-(((b - 1) * m + 1):(b * m)),], method = estim.method, estimate.variance = FALSE)@estimate, x[((b - 1) * m + 1):(b * m),]))
              }
            } else {
              for(b in 1:B){
-               l.ac.f.b = c(l.ac.f.b, .fran.12.density(copula@parameters, x[((b-1)*m+1):(b*m),]))
+               l.ac.f.b = c(l.ac.f.b, .fran.12.density(copula@parameters, x[((b - 1) * m + 1):(b * m),]))
              }
            }
            l.ac.f.b = l.ac.f.b[-1]
@@ -119,13 +119,13 @@
            psn.sample = qt(x, df = tail(copula@parameters, n = 1))
            l.t = log(.t.12.dens(copula@parameters[-length(copula@parameters)], psn.sample, nu = tail(copula@parameters, n = 1)))
            l.t.b = 0
-           if (param.est == T){
+           if (param.est == TRUE){
              for(b in 1:B){
-               l.t.b = c(l.t.b, .t.12.dens(fitCopula(tCopula(dim = dims, df = tail(copula@parameters, n = 1), df.fixed = T), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, psn.sample[((b-1)*m+1):(b*m),], nu = tail(copula@parameters, n = 1)))
+               l.t.b = c(l.t.b, .t.12.dens(fitCopula(tCopula(dim = dims, df = tail(copula@parameters, n = 1), df.fixed = TRUE), data = x[-(((b - 1) * m + 1):(b * m)),], method = estim.method, estimate.variance = FALSE)@estimate, psn.sample[((b - 1) * m + 1):(b * m),], nu = tail(copula@parameters, n = 1)))
              }
            } else {
              for(b in 1:B){
-               l.t.b = c(l.t.b, .t.12.dens(copula@parameters[-length(copula@parameters)], psn.sample[((b-1)*m+1):(b*m),], nu = tail(copula@parameters, n = 1)))
+               l.t.b = c(l.t.b, .t.12.dens(copula@parameters[-length(copula@parameters)], psn.sample[((b - 1) * m + 1):(b * m),], nu = tail(copula@parameters, n = 1)))
              }
            }
            l.t.b = l.t.b[-1]
@@ -135,7 +135,7 @@
          normalCopula = {
            psn.sample = qnorm(x)
            l.ac.ga.b = as.vector(sapply(1:B, FUN = .opt.ga, psn.sample = psn.sample, m = m, dims = dims))
-           stat = sum(log(dCopula(x, normalCopula(copula@parameters, dims))) - log(l.ac.ga.b)) - 1 # change here an estimation of the copula!!!!!
+           stat = sum(log(dCopula(x, normalCopula(copula@parameters, dims))) - log(l.ac.ga.b)) - 1 
            stat
          })
   },
@@ -144,13 +144,13 @@
          claytonCopula = {
            l.ac.c = log(.clay.123.density(copula@parameters, x))
            l.ac.c.b = 0
-           if (param.est == T){
+           if (param.est == TRUE){
              for(b in 1:B){
-               l.ac.c.b = c(l.ac.c.b, .clay.123.density(fitCopula(claytonCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, x[((b-1)*m+1):(b*m),]))
+               l.ac.c.b = c(l.ac.c.b, .clay.123.density(fitCopula(claytonCopula(dim = dims), data = x[-(((b - 1) * m + 1):(b * m)),], method = estim.method, estimate.variance = FALSE)@estimate, x[((b - 1) * m + 1):(b * m),]))
              }
            } else {
              for(b in 1:B){
-               l.ac.c.b = c(l.ac.c.b, .clay.123.density(copula@parameters, x[((b-1)*m+1):(b*m),]))
+               l.ac.c.b = c(l.ac.c.b, .clay.123.density(copula@parameters, x[((b - 1) * m + 1):(b * m),]))
              }
            }
            l.ac.c.b = l.ac.c.b[-1]
@@ -160,13 +160,13 @@
          gumbelCopula = {
            l.ac.g = log(.gumb.123.density(copula@parameters, x))
            l.ac.g.b = 0
-           if (param.est == T){
+           if (param.est == TRUE){
              for(b in 1:B){
-               l.ac.g.b = c(l.ac.g.b, .gumb.123.density(fitCopula(gumbelCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, x[((b-1)*m+1):(b*m),]))
+               l.ac.g.b = c(l.ac.g.b, .gumb.123.density(fitCopula(gumbelCopula(dim = dims), data = x[-(((b - 1) * m + 1):(b * m)),], method = estim.method, estimate.variance = FALSE)@estimate, x[((b - 1) * m + 1):(b * m),]))
              }
            } else {
              for(b in 1:B){
-               l.ac.g.b = c(l.ac.g.b, .gumb.123.density(copula@parameters, x[((b-1)*m+1):(b*m),]))
+               l.ac.g.b = c(l.ac.g.b, .gumb.123.density(copula@parameters, x[((b - 1) * m + 1):(b * m),]))
              }
            }
            
@@ -177,13 +177,13 @@
          frankCopula = {
            l.ac.f = log(.fran.123.density(copula@parameters, x))
            l.ac.f.b = 0
-           if (param.est == T){
+           if (param.est == TRUE){
              for(b in 1:B){
-               l.ac.f.b = c(l.ac.f.b, .fran.123.density(fitCopula(frankCopula(dim = dims), data = x[-(((b-1)*m+1):(b*m)),], method = estim.method)@estimate, x[((b-1)*m+1):(b*m),]))
+               l.ac.f.b = c(l.ac.f.b, .fran.123.density(fitCopula(frankCopula(dim = dims), data = x[-(((b - 1) * m + 1):(b * m)),], method = estim.method, estimate.variance = FALSE)@estimate, x[((b - 1) * m + 1):(b * m),]))
              }
            } else {
              for(b in 1:B){
-               l.ac.f.b = c(l.ac.f.b, .fran.123.density(copula@parameters, x[((b-1)*m+1):(b*m),]))
+               l.ac.f.b = c(l.ac.f.b, .fran.123.density(copula@parameters, x[((b - 1) * m + 1):(b * m),]))
              }
            }
            l.ac.f.b = l.ac.f.b[-1]
@@ -196,7 +196,7 @@
          normalCopula = {
            psn.sample = qnorm(x)
            l.ac.ga.b = as.vector(sapply(1:B, FUN = .opt.ga, psn.sample = psn.sample, m = m, dims = dims))
-           stat = sum(log(dCopula(x, normalCopula(copula@parameters, dims, dispstr = copula@dispstr))) - log(l.ac.ga.b)) - 3 # change here an estimation of the copula!!!!!
+           stat = sum(log(dCopula(x, normalCopula(copula@parameters, dims, dispstr = copula@dispstr))) - log(l.ac.ga.b)) - 3 
            stat
          })
 })

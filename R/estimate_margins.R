@@ -1,8 +1,7 @@
 .margins = function(x, margins){
   if (length(margins) == 1) {
     b = apply(x, 2, .one.mar, margins = margins)
-  }
-  else {
+  } else {
     b = list()
     for (i in 1:NCOL(x)) {
       b[[i]] = .one.mar(x[, i], margins[i])
@@ -18,6 +17,9 @@
   }
   else {
     boundary = 10000
+    if((any(x < 0)) & ((margins == "beta") | (margins == "chisq") | (margins == "f") | (margins == "gamma") | (margins == "lnorm") | (margins == "weibull"))){
+      stop(paste("Cannot fit", margins, "marginal distribution to negative values.", sep = " "))
+    }
     if ((margins == "beta") | (margins == "cauchy") | (margins == "chisq") | 
           (margins == "f") | (margins == "gamma") | (margins == "lnorm") | 
           (margins == "norm") | (margins == "t") | (margins == "weibull")) {
@@ -34,10 +36,8 @@
     }
     else {
       if ((margins == "exp")) {
-        op = optimise(f = function(par, x) {
-          sum(log(eval(do.call(paste("d", margins, sep = ""), 
-                               args = list(x = x, par)))))
-        }, x = x, lower = 1e-04, upper = 100, maximum = TRUE)$maximum
+        if(any(x < 0)){stop("Cannot fit exponential marginal distribution to negative values.")}
+        op = 1/mean(x)
         list(op, eval(do.call(paste("p", margins, sep = ""), args = list(q = x, 
                                                             op))))
       }

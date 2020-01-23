@@ -1,46 +1,57 @@
 .margins.param.est = function(copula, margins, x, param, param.est, df, df.est, dispstr) {
   if (copula == "gaussian"){ warning("Please note that the old (pre 0.1-3) term 'gaussian' was replaced with 'normal'."); copula = "normal"}
-  if (df.est == T){df.fixed = F} else if (df.est == F){df.fixed = T}
+  if (df.est == TRUE){df.fixed = FALSE} else if (df.est == FALSE){df.fixed = TRUE}
+  if (length(margins) > 1 & length(margins) != dim(x)[2]) {stop(paste("If length(margins)>1, then the number of entries has to fit the number of data sequences. You included ", length(margins)," distributions, though ",dim(x)[2], " data sequences are used. Please amend and run the function again."))}
+  if (any(!is.element(margins, c("ranks", "beta", "cauchy", "chisq", "f", "gamma", "lnorm", "norm", "t", "weibull","exp")))) {stop(paste("At least one of the distributions in `margins' is not implemented. Please amend and run the function again. \n It has to be either of `ranks', `beta', `cauchy', `chisq', `f', `gamma', `lnorm', `norm', `t', `weibull', `exp'."))}
   
-  if (any(x > 1) || any(x < 0)){
-    if (margins == "ranks"){
-      warning(paste("The observations aren't in [0,1]. The margins will be estimated by the ", margins, " of the observations.", sep = ""))
-    } else {
-      warning(paste("The observations aren't in [0,1]. The margins will be estimated by the ", margins, " distribution.", sep = ""))
-    }
+  param.margins = NULL
+  if (!is.null(margins)){
+      print(paste("The margins will be estimated as: ", paste0(margins, collapse = ", "), sep = ""))
     
     res.margins = .margins(x, margins)
     param.margins = list()
-    if (margins == "ranks"){
-      for (i in 1:dim(x)[2]) {x[,i] = res.margins[[i]][[1]]}
-    } else {
-      for (i in 1:length(res.margins)) {param.margins[[i]] = res.margins[[i]][[1]]}
-      for (i in 1:dim(x)[2]) {x[,i] = res.margins[[i]][[2]]}
+    if(length(margins) == 1) {margins.dummy = rep(margins, dim(x)[2])} else {margins.dummy = margins}
+    for (i in 1:length(margins.dummy)) {
+      if (margins.dummy[i] == "ranks"){
+        x[,i] = res.margins[[i]][[1]]
+      } else {
+        param.margins[[i]] = res.margins[[i]][[1]]
+        x[,i] = res.margins[[i]][[2]]
+      }
     }
+  } else {
+    if (any(x > 1) || any(x < 0)){print("The observations aren't in [0,1]. This will lead to errors while the estimation. Please set 'margins' to any of the incorporated functions.")}
   }
   
-  if ("normal" == copula || "t" == copula){
-    if (param.est == T){
-      param = try(fitCopula(ellipCopula(copula, dim = dim(x)[2], df = df, df.fixed = df.fixed, dispstr = dispstr), data = x, method = "mpl")@estimate, silent = T); estim.method = "mpl"
-      if (class(param) == "try-error"){warning("Pseudo Maximum Likelihood estimation of the parameter failed. The estimation was performed with inversion of Kendall's Tau."); param = fitCopula(ellipCopula(copula, dim = dim(x)[2], df = df, df.fixed = df.fixed, dispstr = dispstr), data = x, method = "itau")@estimate}; estim.method = "itau"
+  if ("normal" == copula) {
+    if (param.est == TRUE){
+      param = try(fitCopula(ellipCopula(copula, dim = dim(x)[2], df = df, df.fixed = df.fixed, dispstr = dispstr), data = x, method = "mpl", estimate.variance = FALSE, hideWarnings = TRUE)@estimate, silent = TRUE); estim.method = "mpl"
+      if (class(param) == "try-error"){warning("Pseudo Maximum Likelihood estimation of the parameter failed. The estimation was performed with inversion of Kendall's Tau."); param = fitCopula(ellipCopula(copula, dim = dim(x)[2], df = df, df.fixed = df.fixed, dispstr = dispstr), data = x, method = "itau", estimate.variance = FALSE, hideWarnings = TRUE)@estimate; estim.method = "itau"}
     }
-    if (copula == "t" & df.fixed == F & param.est == T){
+    copula = ellipCopula(copula, param = param, dim = dim(x)[2], df = df, df.fixed = TRUE, dispstr = dispstr); estim.method = "mpl"
+    if (class(copula) == "indepCopula") {stop("The parameter estimation is at boundary and an independence copula was returned.")}
+  } else if ("t" == copula){
+    if (param.est == TRUE){
+      param = try(fitCopula(ellipCopula(copula, dim = dim(x)[2], df = df, df.fixed = df.fixed, dispstr = dispstr), data = x, method = "mpl", estimate.variance = FALSE, hideWarnings = TRUE)@estimate, silent = TRUE); estim.method = "mpl"
+      if (class(param) == "try-error"){warning("Pseudo Maximum Likelihood estimation of the parameter failed. The estimation was performed with inversion of Kendall's Tau. Therefore df.est was set to FALSE."); param = fitCopula(ellipCopula(copula, dim = dim(x)[2], df = df, df.fixed = TRUE, dispstr = dispstr), data = x, method = "itau", estimate.variance = FALSE, hideWarnings = TRUE)@estimate; estim.method = "itau"; df.fixed = TRUE; df.est = FALSE}
+    }
+    if (copula == "t" & df.fixed == FALSE & param.est == TRUE){
       df = tail(param, n=1)
-      copula = ellipCopula(copula, param = param[-length(param)], dim = dim(x)[2], df = df, df.fixed = T, dispstr = dispstr); estim.method = "mpl"
+      copula = ellipCopula(copula, param = param[-length(param)], dim = dim(x)[2], df = df, df.fixed = TRUE, dispstr = dispstr); estim.method = "mpl"
     } else {
-      copula = ellipCopula(copula, param = param, dim = dim(x)[2], df = df, df.fixed = T, dispstr = dispstr); estim.method = "mpl"
+      copula = ellipCopula(copula, param = param, dim = dim(x)[2], df = df, df.fixed = TRUE, dispstr = dispstr); estim.method = "mpl"
     }
     if (class(copula) == "indepCopula") {stop("The parameter estimation is at boundary and an independence copula was returned.")}
   } else if("clayton" == copula || "frank" == copula || "gumbel" == copula || 
             "amh" == copula || "joe" == copula){
-    if (param.est == T){
-      param = try(fitCopula(archmCopula(copula, dim = dim(x)[2]), data = x, method = "mpl")@estimate, silent = T); estim.method = "mpl"
-      if (class(param) == "try-error"){warning("Pseudo Maximum Likelihood estimation of the parameter failed. The estimation was performed with inversion of Kendall's Tau."); param = fitCopula(archmCopula(copula, dim = dim(x)[2]), data = x, method = "itau")@estimate}; estim.method = "itau"
+    if (param.est == TRUE){
+      param = try(fitCopula(archmCopula(copula, dim = dim(x)[2]), data = x, method = "mpl", estimate.variance = FALSE, hideWarnings = TRUE)@estimate, silent = TRUE); estim.method = "mpl"
+      if (class(param) == "try-error"){warning("Pseudo Maximum Likelihood estimation of the parameter failed. The estimation was performed with inversion of Kendall's Tau."); param = fitCopula(archmCopula(copula, dim = dim(x)[2]), data = x, method = "itau", estimate.variance = FALSE, hideWarnings = TRUE)@estimate; estim.method = "itau"}
     }
     if (copula == "clayton" & dim(x)[2] > 2 & param < 0) {stop("The dependence parameter is negative for the dataset. For the clayton copula can this be only the case if the dimension is 2. Therefore is this not an appropriate copula for the dataset. Please consider to use another one.")}
     if (copula == "frank" & dim(x)[2] > 2 & param < 0) {stop("The dependence parameter is negative for the dataset. For the frank copula can this be only the case if the dimension is 2. Therefore is this not an appropriate copula for the dataset. Please consider to use another one.")}
     copula = archmCopula(copula, param = param, dim = dim(x)[2]); estim.method = "mpl"
     if (class(copula) == "indepCopula") {stop("The parameter estimation is at boundary and an independence copula was returned.")}
   }
-  return(list(copula, x, estim.method))
+  return(list(copula, x, estim.method, param.margins, df.est))
 }

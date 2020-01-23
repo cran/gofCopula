@@ -1,5 +1,7 @@
-gofWhich = function(copula, d){
-    if (!is.numeric(d)) {stop("d must be a numeric.")}
+gofTest4Copula = function(copula = NULL, d = 2){
+  if (length(copula) > 1) {stop("The argument 'copula' has to be of length 1.")}
+  if (is.null(copula)) {copula = eval(formals(gofRosenblattSnB)$copula)}
+  if (!is.numeric(d)) {stop("d must be a numeric.")}
   if (d <= 1){stop("The dimension d must be 2 or even higher.")}
   cops = lapply(ls(pos = "package:gofCopula"), function(x) {try(eval(formals(x)$copula), silent = TRUE)})
   cops_pos = sapply(cops, function(x) {any(is.element(x, copula))})
@@ -8,7 +10,9 @@ gofWhich = function(copula, d){
   c("gofHybrid", names(res))
 }
 
-gofWhichCopula = function(test){
+gofCopula4Test = function(test){
+  if (!is.character(test)) {stop("The argument 'test' has to be a character.")}
+  if (length(test) > 1) {stop("The argument 'test' has to be of length 1.")}
     if (is.element(test, c("gofHybrid"))){
         print("The available copula depend on the used tests.")
     } else {
@@ -22,7 +26,7 @@ gofWhichCopula = function(test){
 }
 
 .gofCheckDim = function(test) {
-    if (is.element(test, c("gofRosenblattSnB", "gofRosenblattSnC", "gofRosenblattChisq", "gofRosenblattGamma", "gofSn", "gofKendallCvM", "gofKendallKS"))) {
+    if (is.element(test, c("gofRosenblattSnB", "gofRosenblattSnC", "gofRosenblattChisq", "gofRosenblattGamma", "gofSn", "gofKendallCvM", "gofKendallKS", "gofCustomTest"))) {
         Inf
     } else if (is.element(test, c("gofKernel", "gofWhite"))) {
         2
@@ -33,3 +37,14 @@ gofWhichCopula = function(test){
     }
 }
 
+
+
+
+gofWhich = function(copula = NULL, d = 2){
+  warning("The function 'gofWhich' was renamed to 'gofTest4Copula'. Please use 'gofTest4Copula'.")
+  gofTest4Copula(copula = copula, d = d)
+}
+gofWhichCopula = function(test){
+  warning("The function 'gofWhichCopula' was renamed to 'gofCopula4Test'. Please use 'gofCopula4Test'.")
+  gofCopula4Test(test = test)
+}

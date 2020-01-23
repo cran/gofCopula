@@ -1,13 +1,13 @@
-\name{gofWhichCopula}
-\alias{gofWhichCopula}
+\name{gofCopula4Test}
+\alias{gofCopula4Test}
 
 \title{Implemented copula for a certain test
 }
 \description{
-\code{\link{gofWhichCopula}} returns for a given test the applicable implemented copula.
+\code{\link{gofCopula4Test}} returns for a given test the applicable implemented copula.
 }
 \usage{
-gofWhichCopula(test)
+gofCopula4Test(test)
 }
 \arguments{
 \item{test}{
@@ -20,7 +20,7 @@ In case that the decision for a certain gof test was already done, it is interes
 A character vector which consists of the names of the copula.
 }
 \examples{
-gofWhichCopula("gofRosenblattSnB")
+gofCopula4Test("gofRosenblattSnB")
 
-gofWhichCopula("gofPIOSTn")
+gofCopula4Test("gofPIOSTn")
 }

@@ -3,14 +3,16 @@
 export("gofPIOSRn", "gofPIOSTn", "gofKernel", "gofRosenblattSnB", 
 "gofRosenblattSnC", "gofRosenblattChisq", "gofRosenblattGamma", 
 "gofSn", "gofKendallCvM", "gofKendallKS",
-"gofWhite", "gofRn", "gofHybrid", "gofWhich", "gofWhichCopula", "gof",
-"gofCheckTime", "gofco", "gofADGamma", "gofADChisq"
+"gofWhite", "gofHybrid", "gofWhich", "gofWhichCopula", "gof",
+"gofCheckTime", "gofco", "gofCustomTest",
+"gofGetHybrid", "gofOutputHybrid", "gofCopula4Test", "gofTest4Copula"
 )
 
 exportClass("gofCOP")
 exportClass("goftime")
 
 S3method(print, gofCOP)
+S3method(plot, gofCOP)
 S3method(print, goftime)
 
 # imports:
@@ -18,7 +20,7 @@ S3method(print, goftime)
 import("copula")
 import("parallel")
 import("foreach")
-import("doParallel")
+import("doSNOW")
 import("R.utils")
 importFrom("VineCopula", BiCopGofTest, BiCopDeriv, BiCopDeriv2, BiCopPDF)
 importFrom("SparseGrid", createIntegrationGrid)
@@ -26,4 +28,7 @@ importFrom("numDeriv", grad)
 importFrom("methods", is)
 importFrom("MASS", ginv)
 importFrom("stats", constrOptim, cor, cov, ecdf, lm, optimise, qnorm, qt, pchisq)
-importFrom("utils", tail)
+importFrom("utils", tail, capture.output, setTxtProgressBar, txtProgressBar)
+importFrom("graphics", "abline", "axis", "mtext")
+importFrom("yarrr", "pirateplot")
+importFrom("progress", "progress_bar")

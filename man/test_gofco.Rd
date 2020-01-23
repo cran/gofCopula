@@ -7,38 +7,38 @@
 \code{\link{gofco}} is an interface with the \code{copula} package. It reads out the information from a copula class object and hands them over to a specified gof test or set of tests.
 }
 \usage{
-gofco(copulaobject, x, testset = c("gofPIOSRn", "gofKernel"), margins = "ranks", 
-      dispstr = "ex", M = 1000, execute.times.comp = T, m = 1, MJ = 100, 
-      delta.J = 0.5, nodes.Integration = 12, m_b = 0.5, zeta.m = 0, b_Rn = 0.05, 
-      processes = 1)
+gofco(copulaobject, x, tests = c("gofPIOSRn", "gofKernel"), customTests, 
+      margins = "ranks", M = 1000, MJ = 100, dispstr = "ex", 
+      m = 1, delta.J = 0.5, nodes.Integration = 12, 
+      seed.active = NULL, processes = 1)
 }
 \arguments{
 \item{copulaobject}{
-An object with the copula class from the copula package.
+An object with of class \code{copula} from the copula package.
 }
   \item{x}{
-A matrix containing the residuals of the data. Take into account that the dimension of the matrix must fit the required dimensions from the single tests.
+A matrix containing the data. 
 }
-  \item{testset}{
-The tests to be used. Possible are \code{"gofPIOSRn"}, \code{"gofPIOSTn"}, \code{"gofKernel"}, \code{"gofRosenblattSnB"}, \code{"gofRosenblattSnC"}, \code{"gofRosenblattChisq"}, \code{"gofRosenblattGamma"}, \code{"gofSn"}, \code{"gofKendallCvM"}, \code{"gofKendallKS"}, \code{"gofWhite"}, \code{"gofRn"}.
+  \item{tests}{
+The tests to be used. Possible are \code{"gofPIOSRn"}, \code{"gofPIOSTn"}, \code{"gofKernel"}, \code{"gofRosenblattSnB"}, \code{"gofRosenblattSnC"}, \code{"gofRosenblattChisq"}, \code{"gofRosenblattGamma"}, \code{"gofSn"}, \code{"gofKendallCvM"}, \code{"gofKendallKS"}, \code{"gofWhite"}.
+}
+\item{customTests}{
+A character vector which indicates the customized test to use, if any. The test has to be loaded into the workspace. Currently the function containing the test has to have 2 arguments, the first one for the dataset and the second one for the copula to test for. The arguments have to be named "x" and "copula" respectively.
 }
 \item{margins}{
-Specifies which estimation method shall be used in case that the input data are not in the range [0,1]. The default is \code{"ranks"}, which is the standard approach to convert data in such a case. Alternatively can the following distributions be specified: \code{"beta"}, \code{"cauchy"}, Chi-squared (\code{"chisq"}), \code{"f"}, \code{"gamma"}, Log normal (\code{"lnorm"}), Normal (\code{"norm"}), \code{"t"}, \code{"weibull"}, Exponential (\code{"exp"}).
-}
-\item{dispstr}{
-A character string specifying the type of the symmetric positive definite matrix characterizing the elliptical copula. Implemented structures are "ex" for exchangeable, "ar1" for AR(1), "toep" for Toeplitz, and "un" for unstructured, see package \code{copula}.
+Specifies which estimation method for the margins shall be used. The default is \code{"ranks"}, which is the standard approach to convert data in such a case. Alternatively can the following distributions be specified: \code{"beta"}, \code{"cauchy"}, Chi-squared (\code{"chisq"}), \code{"f"}, \code{"gamma"}, Log normal (\code{"lnorm"}), Normal (\code{"norm"}), \code{"t"}, \code{"weibull"}, Exponential (\code{"exp"}). Input can be either one method, e.g. \code{"ranks"}, which will be used for estimation of all data sequences. Also an individual method for each margin can be specified, e.g. \code{c("ranks", "norm", "t")} for 3 data sequences. If one does not want to estimate the margins, set it to \code{NULL}.
 }
 \item{M}{
 Number of bootstrapping samples in the single tests.
 }
-\item{execute.times.comp}{
-Logical. Defines if the time which the estimation most likely takes shall be computed. It'll be just given if \code{M} is at least 100.
+\item{MJ}{
+Size of bootstrapping sample. Only necessary if the test \code{gofKernel} is part of \code{testset}.
+}
+\item{dispstr}{
+A character string specifying the type of the symmetric positive definite matrix characterizing the elliptical copula. Implemented structures are "ex" for exchangeable and "un" for unstructured, see package \code{copula}.
 }
 \item{m}{
 Length of blocks. Only necessary if the test \code{gofPIOSTn} is part of \code{testset}.
-}
-\item{MJ}{
-Size of bootstrapping sample. Only necessary if the test \code{gofKernel} is part of \code{testset}.
 }
 \item{delta.J}{
 Scaling parameter for the matrix of smoothing parameters. Only necessary if the test \code{gofKernel} is part of \code{testset}.
@@ -46,14 +46,8 @@ Scaling parameter for the matrix of smoothing parameters. Only necessary if the 
 \item{nodes.Integration}{
 Number of knots of the bivariate Gauss-Legendre quadrature. Only necessary if the test \code{gofKernel} is part of \code{testset}.
 }
-\item{m_b}{
-The power of the statistic. Only necessary if the test \code{gofRn} is part of \code{testset}.
-}
-\item{zeta.m}{
-The adjustment parameter. Only necessary if the test \code{gofRn} is part of \code{testset}.
-}
-\item{b_Rn}{
-The bandwidth for the estimation of the first-order partial derivatives based on the empirical copula. Only necessary if the test \code{gofRn} is part of \code{testset}.
+\item{seed.active}{
+Has to be either an integer or a vector of M+1 integers. If an integer, then the seeds for the bootstrapping procedure will be simulated. If M+1 seeds are provided, then these seeds are used in the bootstrapping procedure. Defaults to \code{NULL}, then \code{R} generates the seeds from the computer runtime. Controlling the seeds is useful for reproducibility of a simulation study to compare the power of the tests or for reproducibility of an empirical study.
 }
 \item{processes}{
 The number of parallel processes which are performed to speed up the bootstrapping. Shouldn't be higher than the number of logical processors.}
@@ -62,18 +56,25 @@ The number of parallel processes which are performed to speed up the bootstrappi
 The function reads out the arguments in the copula class object. If the dependence parameter is not specified in the object, it is estimated. In case that the object describes a "t"-copula, then the same holds for the degrees of freedom. The dimension is not extracted from the object. It is obtained from the inserted dataset.
 
 When more than one test shall be performed, the hybrid test is computed too.
+
+For small values of \code{M}, initializing the parallelisation via \code{processes} does not make sense. The registration of the parallel processes increases the computation time. Please consider to enable parallelisation just for high values of \code{M}.
 }
 \value{
-A object of the \code{class} gofCOP with the components
+An object of the \code{class} gofCOP with the components
 \item{method}{a character which informs about the performed analysis}
-\item{erg.tests}{a matrix with the p-values and test statistics of the hybrid and the individual tests}
+\item{copula}{the copula tested for}
+\item{margins}{the method used to estimate the margin distribution.}
+\item{param.margins}{the parameters of the estimated margin distributions. Only applicable if the margins were not specified as \code{"ranks"} or \code{NULL}.}
+\item{theta}{dependence parameters of the copulae}
+\item{df}{the degrees of freedem of the copula. Only applicable for t-copula.}
+\item{res.tests}{a matrix with the p-values and test statistics of the hybrid and the individual tests}
 }
 \references{
 Yan, Jun. Enjoy the joy of copulas: with a package copula. Journal of Statistical Software 21.4 (2007): 1-21.
 }
 \examples{
-data(IndexReturns)
-copObject = normalCopula()
+data(IndexReturns2D)
+copObject = normalCopula(param = 0.5)
 
-gofco(copObject, x = IndexReturns[c(1:100),c(1:2)], testset = c("gofPIOSRn", "gofKernel"), M = 20)
+gofco(copObject, x = IndexReturns2D, tests = c("gofPIOSRn", "gofKernel"), M = 20)
 }
