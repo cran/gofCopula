@@ -9,6 +9,7 @@
 \usage{
 gofPIOSRn(copula, x, param = 0.5, param.est = TRUE, df = 4, df.est = TRUE, 
           margins = "ranks", M = 1000, dispstr = "ex", 
+          lower = NULL, upper = NULL, 
           seed.active = NULL, processes = 1)
 }
 \arguments{
@@ -16,7 +17,7 @@ gofPIOSRn(copula, x, param = 0.5, param.est = TRUE, df = 4, df.est = TRUE,
 The copula to test for. Possible are the copulae \code{"normal"}, \code{"t"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}.
 }
  \item{x}{
-A matrix containing the data. 
+A matrix containing the data with rows being observations and columns being variables.
 }
   \item{param}{
 The parameter to be used.
@@ -38,6 +39,12 @@ Number of bootstrapping loops.
 }
 \item{dispstr}{
 A character string specifying the type of the symmetric positive definite matrix characterizing the elliptical copula. Implemented structures are "ex" for exchangeable and "un" for unstructured, see package \code{copula}.
+}
+\item{lower}{
+Lower bound for the maximum likelihood estimation of the copula parameter. The constraint is also active in the bootstrapping procedure. The constraint is not active when a switch to inversion of Kendall's tau is necessary. Default \code{NULL}. 
+}
+\item{upper}{
+Upper bound for the maximum likelihood estimation of the copula parameter. The constraint is also active in the bootstrapping procedure. The constraint is not active when a switch to inversion of Kendall's tau is necessary. Default \code{NULL}. 
 }
 \item{seed.active}{
 Has to be either an integer or a vector of M+1 integers. If an integer, then the seeds for the bootstrapping procedure will be simulated. If M+1 seeds are provided, then these seeds are used in the bootstrapping procedure. Defaults to \code{NULL}, then \code{R} generates the seeds from the computer runtime. Controlling the seeds is useful for reproducibility of a simulation study to compare the power of the tests or for reproducibility of an empirical study.

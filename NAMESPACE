@@ -3,7 +3,7 @@
 export("gofPIOSRn", "gofPIOSTn", "gofKernel", "gofRosenblattSnB", 
 "gofRosenblattSnC", "gofRosenblattChisq", "gofRosenblattGamma", 
 "gofSn", "gofKendallCvM", "gofKendallKS",
-"gofWhite", "gofHybrid", "gofWhich", "gofWhichCopula", "gof",
+"gofWhite", "gofWhich", "gofWhichCopula", "gof",
 "gofCheckTime", "gofco", "gofCustomTest",
 "gofGetHybrid", "gofOutputHybrid", "gofCopula4Test", "gofTest4Copula"
 )
@@ -32,3 +32,4 @@ importFrom("utils", tail, capture.output, setTxtProgressBar, txtProgressBar)
 importFrom("graphics", "abline", "axis", "mtext")
 importFrom("yarrr", "pirateplot")
 importFrom("progress", "progress_bar")
+importFrom("crayon", "bold")

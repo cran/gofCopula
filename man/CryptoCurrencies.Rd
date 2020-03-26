@@ -5,7 +5,7 @@
 \title{Volatility-adjusted log returns of the two Cryptocurrencies Bitcoin and Litecoin.
 }
 \description{
-A dataset containing the Volatility-adjusted log returns of two Cryptocurrencies in the years 2015-2018.
+A dataset containing the volatility-adjusted log returns of two Cryptocurrencies in the years 2015-2018.
 }
 \usage{
 CryptoCurrencies

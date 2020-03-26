@@ -10,7 +10,7 @@ Plots an object of class gofCOP.
 ## S3 method for class 'gofCOP'
 \method{plot}{gofCOP}(x, copula = NULL, hybrid = NULL, point.bg = "white", point.col = "black", 
       point.cex = .7, jitter.val = 0.1, pal = "xmen", bean.b.o = .2, 
-      inf.method = "iqr", theme = 2, ...)
+      inf.method = "hdi", theme = 2, ...)
 }
 \arguments{
 \item{x}{
@@ -40,7 +40,7 @@ Color palette of the plots. Defaults to \code{xmen}.
 Specification of how opaque the bars are. Defaults to \code{0.2}.
 }
 \item{inf.method}{
-Type of inference bands. Defaults to interquartile range, \code{iqr}.
+Type of inference bands. Defaults to Bayesian Highest Density Intervals, \code{hdi}.
 }
 \item{theme}{
 Theme of the plot. See \code{\link{pirateplot}} for more details. Defaults to \code{2}.

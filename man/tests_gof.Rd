@@ -10,11 +10,12 @@
 gof(x, priority = "tests", copula = NULL, tests = NULL, customTests = NULL, 
     param = 0.5, param.est = TRUE, df = 4, df.est = TRUE, margins = "ranks", 
     M = 1000, MJ = 100, dispstr = "ex", m = 1, delta.J = 0.5, 
-    nodes.Integration = 12, seed.active = NULL, processes = 1)
+    nodes.Integration = 12, 
+    lower = NULL, upper = NULL, seed.active = NULL, processes = 1)
 }
 \arguments{
   \item{x}{
-A matrix containing the data. 
+A matrix containing the data with rows being observations and columns being variables.
 }
   \item{priority}{
 A character string which is either \code{"tests"} or \code{"copula"}. \code{"tests"} indicates that all implemented tests are performed for all copulae which the tests share. These are e.g. \code{"normal"} and \code{"clayton"}. If \code{"copula"} is chosen, the tests which are able to test for \code{"normal"}, \code{"t"}, \code{"frank"}, \code{"gumbel"} and \code{"clayton"} are performed. If one of the arguments \code{tests} or \code{copula} is not \code{NULL}, then \code{priority} doesn't affect the choice of the copulae and tests.
@@ -60,6 +61,12 @@ Scaling parameter for the matrix of smoothing parameters. Only necessary if the 
 }
 \item{nodes.Integration}{
 Number of knots of the bivariate Gauss-Legendre quadrature. Only necessary if the test \code{gofKernel} is part of \code{tests}.
+}
+\item{lower}{
+Lower bound for the maximum likelihood estimation of the copula parameter. The constraint is also active in the bootstrapping procedure. The constraint is not active when a switch to inversion of Kendall's tau is necessary. Default \code{NULL}. 
+}
+\item{upper}{
+Upper bound for the maximum likelihood estimation of the copula parameter. The constraint is also active in the bootstrapping procedure. The constraint is not active when a switch to inversion of Kendall's tau is necessary. Default \code{NULL}. 
 }
 \item{seed.active}{
 Has to be either an integer or a vector of M+1 integers. If an integer, then the seeds for the bootstrapping procedure will be simulated. If M+1 seeds are provided, then these seeds are used in the bootstrapping procedure. Defaults to \code{NULL}, then \code{R} generates the seeds from the computer runtime. Controlling the seeds is useful for reproducibility of a simulation study to compare the power of the tests or for reproducibility of an empirical study.

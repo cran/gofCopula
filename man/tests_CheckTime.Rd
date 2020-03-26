@@ -10,6 +10,7 @@ The computation of a gof test can take very long, especially when the number of 
 gofCheckTime(copula, x, tests, customTests, param = 0.5, param.est = TRUE, df = 4, 
               df.est = TRUE, margins = "ranks", M = 1000, MJ = 100, dispstr = "ex", 
               print.res = TRUE, m = 1, delta.J = 0.5, nodes.Integration = 12, 
+              lower = NULL, upper = NULL, 
               seed.active = NULL, processes = 1)
 }
 \arguments{
@@ -17,7 +18,7 @@ gofCheckTime(copula, x, tests, customTests, param = 0.5, param.est = TRUE, df = 
 A character vector which indicates the copula to test for.
 }
   \item{x}{
-A matrix containing the data.
+A matrix containing the data with rows being observations and columns being variables.
 }
 \item{tests}{
 A character vector which indicates the test to use.
@@ -61,6 +62,12 @@ Scaling parameter for the matrix of smoothing parameters. Only necessary if the 
 \item{nodes.Integration}{
 Number of knots of the bivariate Gauss-Legendre quadrature. Only necessary if the test \code{gofKernel} is part of \code{testset}.
 }
+\item{lower}{
+Lower bound for the maximum likelihood estimation of the copula parameter. The constraint is also active in the bootstrapping procedure. The constraint is not active when a switch to inversion of Kendall's tau is necessary. Default \code{NULL}. 
+}
+\item{upper}{
+Upper bound for the maximum likelihood estimation of the copula parameter. The constraint is also active in the bootstrapping procedure. The constraint is not active when a switch to inversion of Kendall's tau is necessary. Default \code{NULL}. 
+}
 \item{seed.active}{
 Has to be either an integer or a vector of M+1 integers. If an integer, then the seeds for the bootstrapping procedure will be simulated. If M+1 seeds are provided, then these seeds are used in the bootstrapping procedure. Defaults to \code{NULL}, then \code{R} generates the seeds from the computer runtime. Controlling the seeds is useful for reproducibility of a simulation study to compare the power of the tests or for reproducibility of an empirical study.
 }
@@ -71,7 +78,9 @@ The number of parallel processes which are performed to speed up the bootstrappi
 The function estimates the time which the entire gof test will take.
 } 
 \examples{
+\dontrun{
 data(IndexReturns2D)
 
-gofCheckTime("normal", IndexReturns2D, "gofRosenblattSnC", M = 10000)
+gofCheckTime("normal", IndexReturns2D, "gofKendallKS", M = 10000)
+}
 }

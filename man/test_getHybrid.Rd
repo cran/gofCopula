@@ -21,7 +21,13 @@ The desired number of tests to be included in each hybrid test. It should be an 
 }
 
 \details{
-For details about hybrid testing please see the detail section in \code{\link{gofHybrid}}.
+In most of scenarios for goodness-of-fit tests, including the one for copula models (e.g. Genest et al. (2009)) there exists no single dominant optimal test. Zhang et al. (2015) proposed a hybrid test which performed in their simulation study more desirably compared to the applied single tests.
+
+The p-value is a combination of the single tests in the following way:
+\deqn{p_n^{hybrid} = \min(q \cdot \min{(p_n^{(1)}, \dots, p_n^{(q)})}, 1)}{pn^(hybrid) = min(q x min(pn^(1), ..., pn^(q)), 1)}
+where \eqn{q}{q} is the number of tests and \eqn{p_n^{(i)}}{pn^(i)} the p-value of the test \eqn{i}. It is ensured that the hybrid test is consistent as long as at least one of the tests is consistent.
+
+The computation of the individual p-values is performed as described in the details of this tests. Note that the derivation differs.
 }
 
 \value{

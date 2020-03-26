@@ -10,6 +10,7 @@
 gofco(copulaobject, x, tests = c("gofPIOSRn", "gofKernel"), customTests, 
       margins = "ranks", M = 1000, MJ = 100, dispstr = "ex", 
       m = 1, delta.J = 0.5, nodes.Integration = 12, 
+      lower = NULL, upper = NULL, 
       seed.active = NULL, processes = 1)
 }
 \arguments{
@@ -17,7 +18,7 @@ gofco(copulaobject, x, tests = c("gofPIOSRn", "gofKernel"), customTests,
 An object with of class \code{copula} from the copula package.
 }
   \item{x}{
-A matrix containing the data. 
+A matrix containing the data with rows being observations and columns being variables.
 }
   \item{tests}{
 The tests to be used. Possible are \code{"gofPIOSRn"}, \code{"gofPIOSTn"}, \code{"gofKernel"}, \code{"gofRosenblattSnB"}, \code{"gofRosenblattSnC"}, \code{"gofRosenblattChisq"}, \code{"gofRosenblattGamma"}, \code{"gofSn"}, \code{"gofKendallCvM"}, \code{"gofKendallKS"}, \code{"gofWhite"}.
@@ -45,6 +46,12 @@ Scaling parameter for the matrix of smoothing parameters. Only necessary if the 
 }
 \item{nodes.Integration}{
 Number of knots of the bivariate Gauss-Legendre quadrature. Only necessary if the test \code{gofKernel} is part of \code{testset}.
+}
+\item{lower}{
+Lower bound for the maximum likelihood estimation of the copula parameter. The constraint is also active in the bootstrapping procedure. The constraint is not active when a switch to inversion of Kendall's tau is necessary. Default \code{NULL}. 
+}
+\item{upper}{
+Upper bound for the maximum likelihood estimation of the copula parameter. The constraint is also active in the bootstrapping procedure. The constraint is not active when a switch to inversion of Kendall's tau is necessary. Default \code{NULL}. 
 }
 \item{seed.active}{
 Has to be either an integer or a vector of M+1 integers. If an integer, then the seeds for the bootstrapping procedure will be simulated. If M+1 seeds are provided, then these seeds are used in the bootstrapping procedure. Defaults to \code{NULL}, then \code{R} generates the seeds from the computer runtime. Controlling the seeds is useful for reproducibility of a simulation study to compare the power of the tests or for reproducibility of an empirical study.

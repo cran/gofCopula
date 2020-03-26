@@ -1,22 +1,23 @@
 \name{gofKernel}
 \alias{gofKernel}
 
-\title{2 and 3 dimensional gof test of Scaillet (2007)
+\title{2 dimensional gof test of Scaillet (2007)
 }
 \description{
-\code{gofKernel} tests a 2 or 3 dimensional dataset with the Scaillet test for a copula. The possible copulae are \code{"normal"}, \code{"t"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}. The parameter estimation is performed with pseudo maximum likelihood method. In case the estimation fails, inversion of Kendall's tau is used. The approximate p-values are computed with a parametric bootstrap, which computation can be accelerated by enabling in-build parallel computation.
+\code{gofKernel} tests a 2 dimensional dataset with the Scaillet test for a copula. The possible copulae are \code{"normal"}, \code{"t"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}. The parameter estimation is performed with pseudo maximum likelihood method. In case the estimation fails, inversion of Kendall's tau is used. The approximate p-values are computed with a parametric bootstrap, which computation can be accelerated by enabling in-build parallel computation.
 }
 \usage{
 gofKernel(copula, x, param = 0.5, param.est = TRUE, df = 4, df.est = TRUE, 
           margins = "ranks", M = 1000, MJ = 100, dispstr = "ex", delta.J = 0.5, 
-          nodes.Integration = 12, seed.active = NULL, processes = 1)
+          nodes.Integration = 12, 
+          lower = NULL, upper = NULL, seed.active = NULL, processes = 1)
 }
 \arguments{
 \item{copula}{
 The copula to test for. Possible are the copulae \code{"normal"}, \code{"t"}, \code{"clayton"}, \code{"gumbel"} and \code{"frank"}.
 }
  \item{x}{
-A matrix containing the data. 
+A matrix containing the data with rows being observations and columns being variables.
 }
   \item{param}{
 The parameter to be used.
@@ -47,6 +48,12 @@ Scaling parameter for the matrix of smoothing parameters.
 }
 \item{nodes.Integration}{
 Number of knots of the bivariate Gauss-Legendre quadrature.
+}
+\item{lower}{
+Lower bound for the maximum likelihood estimation of the copula parameter. The constraint is also active in the bootstrapping procedure. The constraint is not active when a switch to inversion of Kendall's tau is necessary. Default \code{NULL}. 
+}
+\item{upper}{
+Upper bound for the maximum likelihood estimation of the copula parameter. The constraint is also active in the bootstrapping procedure. The constraint is not active when a switch to inversion of Kendall's tau is necessary. Default \code{NULL}. 
 }
 \item{seed.active}{
 Has to be either an integer or a vector of M+1 integers. If an integer, then the seeds for the bootstrapping procedure will be simulated. If M+1 seeds are provided, then these seeds are used in the bootstrapping procedure. Defaults to \code{NULL}, then \code{R} generates the seeds from the computer runtime. Controlling the seeds is useful for reproducibility of a simulation study to compare the power of the tests or for reproducibility of an empirical study.
