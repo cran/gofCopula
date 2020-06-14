@@ -1,6 +1,6 @@
 gofGetHybrid <- function(result, p_values = NULL, nsets = NULL) {
   if (!inherits(result, "gofCOP")) {
-    stop("Please input an object of class 'gofCOP'. Such an object will be returned by functions of this package. If you input an object obtained from 'gof()', then input the result for one copula only.")
+    stop("Please input an object of class 'gofCOP'. Such an object will be returned by functions of this package. If you input an object obtained from 'gof()', then input the result for all copula.")
   }
   if (length(nsets) > 1) {
     stop("'nsets' has to be a single integer entry.")

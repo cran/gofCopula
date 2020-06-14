@@ -8,9 +8,6 @@ export("gofPIOSRn", "gofPIOSTn", "gofKernel", "gofRosenblattSnB",
 "gofGetHybrid", "gofOutputHybrid", "gofCopula4Test", "gofTest4Copula"
 )
 
-exportClass("gofCOP")
-exportClass("goftime")
-
 S3method(print, gofCOP)
 S3method(plot, gofCOP)
 S3method(print, goftime)

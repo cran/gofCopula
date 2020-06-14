@@ -1,4 +1,4 @@
-.Tstats <- function(x, Tstat = c(eval(formals(gofTstat)$method), "Rn", "Tn", "Kernel", "SnK", "TnK", "White"), copula, ...) {
+.Tstats <- function(x, Tstat, copula, ...) {
   if (is.element(Tstat, eval(formals(gofTstat)$method))) {
     res.f <- gofTstat(u = x, method = Tstat, copula = copula)
     return(res.f)

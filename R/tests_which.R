@@ -18,10 +18,11 @@ gofTest4Copula <- function(copula = NULL, d = 2) {
     any(is.element(x, copula))
   })
   if (!any(cops_pos)) {
-    stop("This copula is for no test implemented.")
+    cat("This copula is for no test implemented.", fill = TRUE)
+  } else {
+    res <- which(sapply(ls(pos = "package:gofCopula")[cops_pos], .gofCheckDim) >= d)
+    return(c("gofHybrid", names(res)))
   }
-  res <- which(sapply(ls(pos = "package:gofCopula")[cops_pos], .gofCheckDim) >= d)
-  return(c("gofHybrid", names(res)))
 }
 
 gofCopula4Test <- function(test) {
@@ -32,11 +33,11 @@ gofCopula4Test <- function(test) {
     stop("The argument 'test' has to be of length 1.")
   }
   if (is.element(test, c("gofHybrid"))) {
-    print("The available copula depend on the used tests.")
+    cat("The available copula depend on the used tests.", fill = TRUE)
   } else {
     res <- try(eval(formals(eval(parse(text = test)))$copula), silent = TRUE)
     if (inherits(res, "try-error")) {
-      print("The test is not implemented.")
+      cat("The test is not implemented.", fill = TRUE)
     } else {
       return(res)
     }

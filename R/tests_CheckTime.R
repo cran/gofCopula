@@ -77,11 +77,13 @@ gofCheckTime <- function(copula, x, tests = NULL, customTests = NULL, param = 0.
   }
   if (!is.null(seed.active) & length(seed.active) == 1) {
     set.seed(seed.active)
+    RNGsetting <- RNGkind()
     RNGkind(sample.kind = "default")
+    on.exit(RNGkind(sample.kind = RNGsetting[3]))
     seed.active <- sample(x = 2147483647, size = M + 1)
   }
 
-  print("An estimate of the computational time is under derivation.")
+  cat("An estimate of the computational time is under derivation.", fill = TRUE)
   lasted.time <- c()
   N <- c(2, 5, 10, 15)
   NJ <- c(2, 5, 10, 15)
@@ -100,7 +102,7 @@ gofCheckTime <- function(copula, x, tests = NULL, customTests = NULL, param = 0.
 
 
         if (lasted.time[j] < 0) {
-          print(paste0("Derivation time could not be computed for ", tests[j]))
+          cat(paste0("Derivation time could not be computed for ", tests[j]), fill = TRUE)
           lasted.time[j] <- NA
         }
       } else {
@@ -112,7 +114,7 @@ gofCheckTime <- function(copula, x, tests = NULL, customTests = NULL, param = 0.
         lasted.time[j] <- round(times.lm$coefficients[1] + times.lm$coefficients[2] * M)
 
         if (lasted.time[j] < 0) {
-          print(paste0("Derivation time could not be computed for ", tests[j]))
+          cat(paste0("Derivation time could not be computed for ", tests[j]), fill = TRUE)
           lasted.time[j] <- NA
         }
       }
@@ -131,7 +133,7 @@ gofCheckTime <- function(copula, x, tests = NULL, customTests = NULL, param = 0.
       lasted.time2[j] <- round(times.lm$coefficients[1] + times.lm$coefficients[2] * M)
 
       if (lasted.time2[j] < 0) {
-        print(paste0("Derivation time could not be computed for ", customTests[j]))
+        cat(paste0("Derivation time could not be computed for ", customTests[j]), fill = TRUE)
         lasted.time2[j] <- NA
       }
     }

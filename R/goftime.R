@@ -13,5 +13,5 @@
 }
 
 print.goftime <- function(x, ...) {
-  print(sprintf("The computation will take approximately %d d, %d h, %d min and %d sec.", x[[1]], x[[2]], x[[3]], x[[4]]))
+  cat(sprintf("The computation will take approximately %d d, %d h, %d min and %d sec.", x[[1]], x[[2]], x[[3]], x[[4]]), fill = TRUE)
 }

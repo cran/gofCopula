@@ -5,13 +5,6 @@ print.gofCOP <- function(x, ...) {
     cat(strwrap(x[[j]]$method), sep = "\n")
     cat("\n")
     out <- character()
-    if (!is.null(x[[j]]$statistic)) {
-      out <- c(out, paste("statistic =", format(signif(x[[j]]$statistic, 2))))
-    }
-    if (!is.null(x[[j]]$p.value)) {
-      fp <- format.pval(x[[j]]$p.value, digits = 2)
-      out <- c(out, paste("p-value =", fp))
-    }
     if (!is.null(x[[j]]$theta)) {
       for (i in seq_along(x[[j]]$theta)) {
         out <- c(out, paste0("theta.", i, " = ", x[[j]]$theta[i]))
@@ -66,7 +59,7 @@ print.gofCOP <- function(x, ...) {
 plot.gofCOP <- function(x, copula = NULL, hybrid = NULL, point.bg = "white", point.col = "black", point.cex = .7,
                         jitter.val = 0.1, pal = "xmen", bean.b.o = .2, inf.method = "hdi", theme = 2, ...) {
   if (inherits(x, "gofCOP") & dim(x[[1]]$res.tests)[1] == 1) {
-    stop("Plotting p-values is only supported for various tests. Please consider gofHybrid() and gof().")
+    stop("Plotting p-values is only supported for various tests. Please consider gof().")
   }
   if (!is.element(inf.method, c("hdi", "iqr", "sd", "se"))) {
     stop("Please consider for the argument 'inf.method' either 'hdi', 'iqr', 'sd' or 'se'.")
@@ -77,7 +70,7 @@ plot.gofCOP <- function(x, copula = NULL, hybrid = NULL, point.bg = "white", poi
     if (!all(is.element(copula, names(x)))) {
       stop("Please select only copulae included in your object of class gofCOP.")
     }
-    cops_max <- c("normal", "t", "clayton", "frank", "gumbel")
+    cops_max <- c("normal", "t", "clayton", "gumbel", "frank")
     cops_out <- cops_max[!is.element(cops_max, copula)]
     for (i in seq_along(cops_out)) {
       eval(parse(text = paste("x$", cops_out[i], "= NULL", sep = "")))

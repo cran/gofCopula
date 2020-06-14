@@ -1,6 +1,6 @@
 gofOutputHybrid <- function(result, tests = NULL, nsets = NULL) {
   if (!inherits(result, "gofCOP")) {
-    stop("Please input an object of class 'gofCOP'. Such an object will be returned by functions of this package. If you input an object obtained from 'gof()', then input the result for one copula only.")
+    stop("Please input an object of class 'gofCOP' generated from the function 'gof()', which is implemented in this package.")
   }
   if (!any(grepl("hybrid", rownames(result[[1]]$res.tests)))) {
     stop("Please input an object containing hybrid test results.")

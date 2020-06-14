@@ -17,7 +17,7 @@
 
   param.margins <- NULL
   if (!is.null(margins)) {
-    print(paste("The margins will be estimated as: ", paste0(margins, collapse = ", "), sep = ""))
+    cat(paste("The margins will be estimated as: ", paste0(margins, collapse = ", "), sep = ""), fill = TRUE)
 
     res.margins <- .margins(x, margins)
     param.margins <- list()
@@ -36,7 +36,7 @@
     }
   } else {
     if (any(x > 1) || any(x < 0)) {
-      print("The observations aren't in [0,1]. This will lead to errors while the estimation. Please set 'margins' to any of the incorporated functions.")
+      cat("The observations aren't in [0,1]. This will lead to errors while the estimation. Please set 'margins' to any of the incorporated functions.", fill = TRUE)
     }
   }
 

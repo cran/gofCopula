@@ -1,4 +1,4 @@
-.gofCopulapb <- function(copula, x, M = 1000, method = eval(formals(.Tstats)$Tstat), estim.method = eval(formals(fitCopula)$method), processes, param.est, df.est, dispstr, param.margins, margins, seed.active, lower, upper, ...) {
+.gofCopulapb <- function(copula, x, M, method, estim.method, processes, param.est, df.est, dispstr, param.margins, margins, seed.active, lower, upper, ...) {
   # required to avoid error on global variable definition
   cnt <- NULL
 
@@ -7,6 +7,9 @@
   }
   bs.ac.c <- list()
 
+  if (is.element(method, c("SnB", "SnC", "AnChisq", "AnGamma"))) {
+    x <- do.call(cCopula, c(list(x, copula = copula)))
+  }
   ac.c <- if (method == "Sn") {
     if (inherits(copula, "tCopula")) {
       copula@parameters[length(copula@parameters)] <- as.integer(copula@parameters[length(copula@parameters)])

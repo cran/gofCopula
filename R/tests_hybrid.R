@@ -2,7 +2,7 @@
   n <- dim(x)[1]
   param.margins <- NULL
   if (!is.null(margins)) {
-    print(paste("The margins will be estimated as: ", paste0(margins, collapse = ", "), sep = ""))
+    cat(paste("The margins will be estimated as: ", paste0(margins, collapse = ", "), sep = ""), fill = TRUE)
 
     res.margins <- .margins(x, margins)
     param.margins <- list()
@@ -25,7 +25,7 @@
   res_list <- list()
   if (!is.null(tests)) {
     res_list <- mapply(function(k, Ms) {
-      print(paste0("Test ", k, " is running"))
+      cat(paste0("Test ", k, " is running"), fill = TRUE)
       a <- tryCatch(doCall(.fcn = k, copula = copula, x = x, margins = NULL, M = Ms, param = param, param.est = param.est, df = df, df.est = df.est, dispstr = dispstr, MJ = MJ, delta.J = delta.J, nodes.Integration = nodes.Integration, m = m, lower = lower, upper = upper, processes = processes, seed.active = seed.active), error = function(e) warning(e))
       a
     }, tests, M, SIMPLIFY = FALSE)
@@ -37,7 +37,7 @@
   res_list2 <- list()
   if (!is.null(customTests)) {
     res_list2 <- mapply(function(k, Ms) {
-      print(paste0("Test ", k, " is running"))
+      cat(paste0("Test ", k, " is running"), fill = TRUE)
       a <- tryCatch(gofCustomTest(copula = copula, x = x, customTest = k, margins = NULL, M = Ms, param = param, param.est = param.est, df = df, df.est = df.est, dispstr = dispstr, lower = lower, upper = upper, processes = processes, seed.active = seed.active), error = function(e) warning(e))
       a
     }, customTests, M, SIMPLIFY = FALSE)

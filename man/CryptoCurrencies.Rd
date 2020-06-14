@@ -13,5 +13,5 @@ CryptoCurrencies
 \format{A list with 4 entries containing the Cryptocurrencies log returns divided by years.
 }
 
-\source{CoinMetrics.}
+\source{CoinMetrics. \url{https://coinmetrics.io/}}
 

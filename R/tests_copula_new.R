@@ -45,7 +45,9 @@ gofRosenblattSnB <- function(copula = c("normal", "t", "clayton", "gumbel", "fra
   }
   if (!is.null(seed.active) & length(seed.active) == 1) {
     set.seed(seed.active)
+    RNGsetting <- RNGkind()
     RNGkind(sample.kind = "default")
+    on.exit(RNGkind(sample.kind = RNGsetting[3]))
     seed.active <- sample(x = 2147483647, size = M + 1)
   }
   if (!is.null(seed.active) & all(!vapply(seed.active, function(x) x %% 1 == 0, TRUE))) {
@@ -110,7 +112,9 @@ gofRosenblattSnC <- function(copula = c("normal", "t", "clayton", "gumbel", "fra
   }
   if (!is.null(seed.active) & length(seed.active) == 1) {
     set.seed(seed.active)
+    RNGsetting <- RNGkind()
     RNGkind(sample.kind = "default")
+    on.exit(RNGkind(sample.kind = RNGsetting[3]))
     seed.active <- sample(x = 2147483647, size = M + 1)
   }
   if (!is.null(seed.active) & all(!vapply(seed.active, function(x) x %% 1 == 0, TRUE))) {
@@ -175,7 +179,9 @@ gofRosenblattChisq <- function(copula = c("normal", "t", "clayton", "gumbel", "f
   }
   if (!is.null(seed.active) & length(seed.active) == 1) {
     set.seed(seed.active)
+    RNGsetting <- RNGkind()
     RNGkind(sample.kind = "default")
+    on.exit(RNGkind(sample.kind = RNGsetting[3]))
     seed.active <- sample(x = 2147483647, size = M + 1)
   }
   if (!is.null(seed.active) & all(!vapply(seed.active, function(x) x %% 1 == 0, TRUE))) {
@@ -240,7 +246,9 @@ gofRosenblattGamma <- function(copula = c("normal", "t", "clayton", "gumbel", "f
   }
   if (!is.null(seed.active) & length(seed.active) == 1) {
     set.seed(seed.active)
+    RNGsetting <- RNGkind()
     RNGkind(sample.kind = "default")
+    on.exit(RNGkind(sample.kind = RNGsetting[3]))
     seed.active <- sample(x = 2147483647, size = M + 1)
   }
   if (!is.null(seed.active) & all(!vapply(seed.active, function(x) x %% 1 == 0, TRUE))) {
@@ -305,7 +313,9 @@ gofSn <- function(copula = c("normal", "t", "clayton", "gumbel", "frank"), x, pa
   }
   if (!is.null(seed.active) & length(seed.active) == 1) {
     set.seed(seed.active)
+    RNGsetting <- RNGkind()
     RNGkind(sample.kind = "default")
+    on.exit(RNGkind(sample.kind = RNGsetting[3]))
     seed.active <- sample(x = 2147483647, size = M + 1)
   }
   if (!is.null(seed.active) & all(!vapply(seed.active, function(x) x %% 1 == 0, TRUE))) {
