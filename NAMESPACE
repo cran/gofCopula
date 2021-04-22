@@ -2,10 +2,12 @@
 
 export("gofPIOSRn", "gofPIOSTn", "gofKernel", "gofRosenblattSnB", 
 "gofRosenblattSnC", "gofRosenblattChisq", "gofRosenblattGamma", 
-"gofSn", "gofKendallCvM", "gofKendallKS",
+"gofCvM", "gofKendallCvM", "gofKendallKS",
 "gofWhite", "gofWhich", "gofWhichCopula", "gof",
 "gofCheckTime", "gofco", "gofCustomTest",
-"gofGetHybrid", "gofOutputHybrid", "gofCopula4Test", "gofTest4Copula"
+"gofGetHybrid", "gofOutputHybrid", "gofCopula4Test", "gofTest4Copula",
+"gofArchmSnB", "gofArchmSnC", "gofArchmGamma", "gofArchmChisq", "gofKS",
+"CopulaTestTable"
 )
 
 S3method(print, gofCOP)
